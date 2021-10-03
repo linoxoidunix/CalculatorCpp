@@ -30,7 +30,8 @@ public:
 	std::shared_ptr<Token> getOperandToken()
 	{
 		if (workList.size() < 2)
-			return std::make_shared<NoOperand>();
+			return std::shared_ptr<Token>();
+			//return std::make_shared<NoOperand>();
 		auto iteratorBegin = workList.begin();
 		if (dynamic_cast<Operand*>(iteratorBegin->get()))
 			return *iteratorBegin;
@@ -48,6 +49,19 @@ public:
 			return std::list<std::shared_ptr<Token>>(iteratorBegin, workList.end());
 		}
 		iteratorBegin++;
+		iteratorBegin++;
+		return std::list<std::shared_ptr<Token>>(iteratorBegin, workList.end());
+	}
+	std::list<std::shared_ptr<Token>> getNoFirtsElement()
+	{
+		if (workList.size() < 2)
+			return { std::make_shared<Number>() };
+		auto iteratorBegin = workList.begin();
+		//if (workList.size() == 2)
+		//{
+		//	iteratorBegin++;
+		//	return std::list<std::shared_ptr<Token>>(iteratorBegin, workList.end());
+		//}
 		iteratorBegin++;
 		return std::list<std::shared_ptr<Token>>(iteratorBegin, workList.end());
 	}

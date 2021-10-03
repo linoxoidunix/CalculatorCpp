@@ -66,25 +66,27 @@ int main()
     Printer printer;
     //printer.print(a + (b - c) * d);
     //std::string myExpression = "3 + 6 * 9";
-    //std::string myExpression = "3 + 6 + 9";
+    std::string myExpression = "3 - 6 - 9 + 9 - 3 + 6";
     //std::string myExpression = "3 + 6";
     //std::string myExpression = "3 + 6 + 9 - 6 * 2 / 4";
     //std::string myExpression = "- 3";
-    //std::string myExpression = "12 / 4 / 3 / 1";
-    std::string myExpression = "12 - 4 - 3 - 1";
+    //std::string myExpression = "12 / 4 / 3 - 1 - 1";
+    //std::string myExpression = "12 / 4 - 6 / 3 - 1";
+    //std::string myExpression = "12 / 4 * 3 - 6 * 3 / 2 + 1 * 45 - 2";
+    //std::string myExpression = "12 - 4 - 3 - 1";
 
     std::string delimiter = " ";
     std::list<std::string> v = split(myExpression, delimiter);
     TokenFactory factoryToken;
     std::list<std::shared_ptr<Token>> listTokens;
     std::for_each(v.begin(), v.end(), [&listTokens, &factoryToken](const std::string v) { auto ptr = std::shared_ptr<Token>(); ptr.reset(factoryToken.produce(v));  listTokens.push_back(ptr); });
-    Executor executor(listTokens);
+    Executor executor;
     //Number number6(6);
     //SumOperand sumOperand;
     //Number number9(9);
     //Number number12(12);
     //executor.calculate(number6, sumOperand, number9, sumOperand, number12);
-    printer.print(executor.calculate());
+    printer.print(std::get<0>(executor.calculate(listTokens)));
     return 0;
 }
 

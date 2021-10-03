@@ -50,6 +50,7 @@ class Operand : public Token
 {
 public:
 	virtual ~Operand() = default;
+	int getPriority() { return priority; };
 	//virtual void accept(IVisiter* visiter) = 0;
 protected:
 	int priority = 0;
@@ -59,6 +60,7 @@ class UnaryOperand : public Operand
 {
 public:
 	virtual ~UnaryOperand() = default;
+	//int getPriority() { return priority; };
 	//virtual void accept(IVisiter* visiter) = 0;
 };
 //
@@ -76,7 +78,7 @@ public:
 	BinaryOperand(Number& _left, Number& _right) : left(_left), right(_right) {};
 	virtual ~BinaryOperand() = default;
 	//virtual void accept(IVisiter* visiter) override {};
-
+	//int getPriority() { return priority; };
 	//virtual Number calculate() = 0;
 protected:
 	Number left;
@@ -91,7 +93,7 @@ public:
 	Number operator() (Number left, Number right) { return left * right; };
 	virtual ~MulOperand() = default;
 	virtual void accept(IVisiter* visiter) override;
-
+	//int getPriority() { return priority; };
 };
 
 class DivOperand : public BinaryOperand
@@ -101,6 +103,7 @@ public:
 	virtual ~DivOperand() = default;
 	Number operator() (Number left, Number right) { return left / right; };
 	virtual void accept(IVisiter* visiter) override;
+	//int getPriority() { return priority; };
 };
 
 class SubOperand : public BinaryOperand
@@ -110,6 +113,7 @@ public:
 	~SubOperand() = default;
 	Number operator() (Number left, Number right) { return left - right; };
 	virtual void accept(IVisiter* visiter) override;
+	//int getPriority() { return priority; };
 };
 
 class SumOperand : public BinaryOperand
@@ -136,12 +140,12 @@ public:
 	{
 		if (expression == "*")
 			return new MulOperand();
-		/*if (expression == "/")
+		if (expression == "/")
 			return new DivOperand();
 		if (expression == "+")
 			return new SumOperand();
 		if (expression == "-")
-			return new SubOperand();*/
+			return new SubOperand();
 		try
 		{
 			double value = std::stod(expression);

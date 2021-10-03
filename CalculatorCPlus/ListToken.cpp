@@ -4,25 +4,10 @@
 
 ListToken::ListToken(std::list<std::shared_ptr<Token>> listTokens) : workList(listTokens)
 {
-	typedef std::list<structToken>::iterator locIt;
+	/*typedef std::list<structToken>::iterator locIt;
 	locIt lastOperand = listStructToken.end();
 	for (auto elem = workList.begin(); elem != workList.end(); elem++)
 	{
-		if (elem == workList.begin())
-		{
-			structToken token(*elem, nullptr, nullptr);
-			listStructToken.push_back(token);
-			NoOperand* noOperand = dynamic_cast<NoOperand*> (elem->get());
-			MulOperand* mulOperand = dynamic_cast<MulOperand*>(elem->get());
-			DivOperand* divOperand = dynamic_cast<DivOperand*>(elem->get());
-			SumOperand* sumOperand = dynamic_cast<SumOperand*>(elem->get());
-			SubOperand* subOperand = dynamic_cast<SubOperand*>(elem->get());
-			if (noOperand != nullptr || mulOperand != nullptr || divOperand != nullptr || sumOperand != nullptr || subOperand != nullptr)
-			{
-
-			}
-			continue;
-		}
 		Number* number		   = dynamic_cast<Number*>	  (elem->get());
 		if (number != nullptr)
 		{
@@ -55,5 +40,5 @@ ListToken::ListToken(std::list<std::shared_ptr<Token>> listTokens) : workList(li
 		}
 		structToken token(*elem, nullptr, nullptr);
 		listStructToken.push_back(token);
-	}
+	}*/
 }
