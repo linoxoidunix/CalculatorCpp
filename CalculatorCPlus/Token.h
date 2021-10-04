@@ -5,14 +5,14 @@
 #include <iostream>
 #include <list>
 
-class IVisiter;
+class IVisiterPriority;
 class IVisiterIsOperand;
 
 class Token
 {
 public:
 	virtual ~Token() = default;
-	virtual void accept(IVisiter* visiter) = 0;
+	virtual int accept(IVisiterPriority* visiter) = 0;
 	virtual bool accept(IVisiterIsOperand* visiter) = 0;
 };
 
@@ -42,7 +42,7 @@ public:
 		myNumber /= rightNumber.getNumber();
 		return *this;
 	}
-	virtual void accept(IVisiter* visiter) override;
+	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
 
 private:
@@ -74,7 +74,7 @@ public:
 	UnarySubOperand(Number newNumber = 0) : UnaryOperand(newNumber) { priority = 2; };
 	~UnarySubOperand() = default;
 	Number operator() (Number left) { return Number(0) - left; };
-	virtual void accept(IVisiter* visiter) override;
+	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
 	virtual Number calculate(Number number) override;
 };
@@ -85,7 +85,7 @@ public:
 	UnarySumOperand(Number newNumber = 0) : UnaryOperand(newNumber) { priority = 1; };
 	~UnarySumOperand() = default;
 	Number operator() (Number left) { return Number(0) + left; };
-	virtual void accept(IVisiter* visiter) override;
+	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
 	virtual Number calculate(Number number) override;
 };
@@ -96,7 +96,7 @@ class NoOperand : public Operand
 public:
 	NoOperand() = default;
 	virtual ~NoOperand() = default;
-	virtual void accept(IVisiter* visiter) override;
+	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
 };
 //
@@ -120,7 +120,7 @@ public:
 	MulOperand(Number _left = 0, Number _right = 0) :BinaryOperand(_left, _right) { priority = 3; };
 	Number operator() (Number left, Number right) { return left * right; };
 	virtual ~MulOperand() = default;
-	virtual void accept(IVisiter* visiter) override;
+	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
 	virtual Number calculate(Number left, Number right) override;
 };
@@ -131,7 +131,7 @@ public:
 	DivOperand(Number _left = 0, Number _right = 0) :BinaryOperand(_left, _right) { priority = 4; };
 	virtual ~DivOperand() = default;
 	Number operator() (Number left, Number right) { return left / right; };
-	virtual void accept(IVisiter* visiter) override;
+	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
 	virtual Number calculate(Number left, Number right) override;
 };
@@ -142,7 +142,7 @@ public:
 	SubOperand(Number _left = 0, Number _right = 0) :BinaryOperand(_left, _right) { priority = 2; };
 	~SubOperand() = default;
 	Number operator() (Number left, Number right) { return left - right; };
-	virtual void accept(IVisiter* visiter) override;
+	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
 	virtual Number calculate(Number left, Number right) override;
 };
@@ -153,7 +153,7 @@ public:
 	SumOperand(Number _left = 0, Number _right = 0) :BinaryOperand(_left, _right) { priority = 1; };
 	~SumOperand() = default;
 	Number operator() (Number left, Number right) { return left + right; };
-	virtual void accept(IVisiter* visiter) override;
+	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
 	virtual Number calculate(Number left, Number right) override;
 };
@@ -193,7 +193,7 @@ private:
 class TokenFactoryBase
 {
 public:
-	virtual Token* produce(std::string) const = 0;
+	virtual std::shared_ptr<Token> produce(std::string) const = 0;
 	~TokenFactoryBase() = default;
 };
 
@@ -201,26 +201,26 @@ class BinaryTokenFactory : public TokenFactoryBase
 {
 public:
 	BinaryTokenFactory() = default;
-	virtual Token* produce(std::string expression) const override 
+	virtual std::shared_ptr<Token> produce(std::string expression) const override 
 	{
 		if (expression == "*")
-			return new MulOperand();
+			return std::make_shared<MulOperand>();
 		if (expression == "/")
-			return new DivOperand();
+			return std::make_shared<DivOperand>();
 		if (expression == "+")
-			return new SumOperand();
+			return std::make_shared<SumOperand>();
 		if (expression == "-")
-			return new SubOperand();
+			return std::make_shared<SubOperand>();
 		try
 		{
 			double value = std::stod(expression);
-			return new Number(value);
+			return std::make_shared<Number>(value);
 		}
 		catch (...)
 		{
 
 		}
-		return new NoOperand();
+		return std::make_shared<NoOperand>();
 	}
 	~BinaryTokenFactory() = default;
 };
@@ -229,18 +229,13 @@ class UnaryTokenFactory : public TokenFactoryBase
 {
 public:
 	UnaryTokenFactory() = default;
-	virtual Token* produce(std::string expression) const override
+	virtual std::shared_ptr<Token> produce(std::string expression) const override
 	{
-		//if (expression == "*")
-		//	return new MulOperand();
-		//if (expression == "/")
-		//	return new DivOperand();
 		if (expression == "+")
-			return new UnarySumOperand();
+			return std::make_shared<UnarySumOperand>();
 		if (expression == "-")
-			return new UnarySubOperand();
-		return nullptr;
-		//return new NoOperand();
+			return std::make_shared<UnarySubOperand>();
+		return std::shared_ptr<NoOperand>();
 	}
 	~UnaryTokenFactory() = default;
 };

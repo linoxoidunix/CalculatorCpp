@@ -16,6 +16,7 @@ int main()
     //Number b(2);
     //Number c(3);
     //Number d(4);
+    int x = 0;
     Printer printer;
     ////printer.print(a + (b - c) * d);
     //std::string myExpression = "3 + 6 * 9 + 1";

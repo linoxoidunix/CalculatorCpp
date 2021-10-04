@@ -13,18 +13,19 @@ std::tuple<Number, std::list<std::shared_ptr<Token>>> Executor::calculate(std::l
 	if (leftNumber != nullptr)
 	{
 		result = std::make_tuple(*leftNumber, myListToken.getNoFirtsElement());
-		if (dynamic_cast<BinaryOperand*>(operandToken.get()) != nullptr)
+		auto operand = dynamic_cast<BinaryOperand*>(operandToken.get());
+		if (operand != nullptr)
 		{
-			if (basePriority < dynamic_cast<Operand*>(operandToken.get())->getPriority())
+			VisiterPriority visiterPriority;
+			if (basePriority < operandToken->accept(&visiterPriority))
 			{
-				BinaryOperand* operand =  dynamic_cast<BinaryOperand*>(operandToken.get());
-				auto tuple = calculate(rightTokens, operand->getPriority());
+				auto tuple = calculate(rightTokens, operandToken->accept(&visiterPriority));
 				result = std::make_tuple(operand->calculate(*leftNumber, std::get<0>(tuple)), std::get<1>(tuple));
 				ListToken nextToken(std::get<1>(result));
 				auto childList = std::get<1>(result);
 				if (!std::get<1>(result).empty())
 				{
-					if (dynamic_cast<Operand*>(nextToken.getLeftToken().get())->getPriority() > basePriority)
+					if (nextToken.getLeftToken()->accept(&visiterPriority) > basePriority)
 					{
 						std::shared_ptr<Token> ptr;
 						ptr.reset(new Number(std::get<0>(result)));
@@ -48,43 +49,42 @@ std::tuple<Number, std::list<std::shared_ptr<Token>>> Executor::calculate(std::l
 	return result;
 }
 
-int Executor::visit(MulOperand* op)
+int VisiterPriority::visit(MulOperand* op)
 {
 	return op->getPriority();
 }
 
-int Executor::visit(DivOperand* op)
+int VisiterPriority::visit(DivOperand* op)
 {
 	return op->getPriority();
 }
 
-int Executor::visit(SubOperand* op)
+int VisiterPriority::visit(SubOperand* op)
 {
 	return op->getPriority();
 }
 
-int Executor::visit(SumOperand* op)
+int VisiterPriority::visit(SumOperand* op)
 {
 	return op->getPriority();
 }
 
-void Executor::visit(Number* number)
+int VisiterPriority::visit(Number* number)
 {
-	//result = *number;
-
+	return 0; //???
 }
 
-int Executor::visit(NoOperand* op)
-{
-	return op->getPriority();
-}
-
-int Executor::visit(UnarySubOperand* op)
+int VisiterPriority::visit(NoOperand* op)
 {
 	return op->getPriority();
 }
 
-int Executor::visit(UnarySumOperand* op)
+int VisiterPriority::visit(UnarySubOperand* op)
+{
+	return op->getPriority();
+}
+
+int VisiterPriority::visit(UnarySumOperand* op)
 {
 	return op->getPriority();
 }

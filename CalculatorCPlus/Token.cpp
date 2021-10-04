@@ -2,27 +2,27 @@
 #include "Executor.h"
 #include <algorithm>
 
-void Number::accept(IVisiter* visiter)
+int Number::accept(IVisiterPriority* visiter)
 {
-	visiter->visit(this);
+	return visiter->visit(this);
 }
 bool Number::accept(IVisiterIsOperand* visiter)
 {
 	return visiter->visit(this);
 }
 //
-void NoOperand::accept(IVisiter* visiter)
+int NoOperand::accept(IVisiterPriority* visiter)
 {
-	visiter->visit(this);
+	return visiter->visit(this);
 }
 bool NoOperand::accept(IVisiterIsOperand* visiter)
 {
 	return visiter->visit(this);
 }
 //
-void MulOperand::accept(IVisiter* visiter)
+int MulOperand::accept(IVisiterPriority* visiter)
 {
-	visiter->visit(this);
+	return visiter->visit(this);
 }
 
 bool MulOperand::accept(IVisiterIsOperand* visiter)
@@ -35,9 +35,9 @@ Number MulOperand::calculate(Number left, Number right)
 	return left * right;
 }
 
-void SubOperand::accept(IVisiter* visiter)
+int SubOperand::accept(IVisiterPriority* visiter)
 {
-	visiter->visit(this);
+	return visiter->visit(this);
 }
 
 bool SubOperand::accept(IVisiterIsOperand* visiter)
@@ -50,9 +50,9 @@ Number SubOperand::calculate(Number left, Number right)
 	return left - right;
 }
 
-void SumOperand::accept(IVisiter* visiter)
+int SumOperand::accept(IVisiterPriority* visiter)
 {
-	visiter->visit(this);
+	return visiter->visit(this);
 }
 
 bool SumOperand::accept(IVisiterIsOperand* visiter)
@@ -65,9 +65,9 @@ Number SumOperand::calculate(Number left, Number right)
 	return left + right;
 }
 
-void DivOperand::accept(IVisiter* visiter)
+int DivOperand::accept(IVisiterPriority* visiter)
 {
-	visiter->visit(this);
+	return visiter->visit(this);
 }
 
 bool DivOperand::accept(IVisiterIsOperand* visiter)
@@ -80,9 +80,9 @@ Number DivOperand::calculate(Number left, Number right)
 	return left / right;
 }
 
-void UnarySubOperand::accept(IVisiter* visiter)
+int UnarySubOperand::accept(IVisiterPriority* visiter)
 {
-	visiter->visit(this);
+	return visiter->visit(this);
 }
 
 bool UnarySubOperand::accept(IVisiterIsOperand* visiter)
@@ -111,33 +111,21 @@ std::list<std::shared_ptr<Token>> TokensFactory::produce(std::list<std::string> 
 		if (unaryPtr)
 		{
 			if (prevTokenIsOperand || (!prev_ptr))
-			{
-				std::shared_ptr<Token> ptr;
-				ptr.reset(unaryPtr);
-				result.push_back(ptr);
-			}
+				result.push_back(unaryPtr);
 			else
-			{
-				std::shared_ptr<Token> ptr;
-				ptr.reset(binaryPtr);
-				result.push_back(ptr);
-			}
+				result.push_back(binaryPtr);
 		}
 		else
-		{
-			std::shared_ptr<Token> ptr;
-			ptr.reset(binaryPtr);
-			result.push_back(ptr);
-		}
+			result.push_back(binaryPtr);
 		prev_ptr = result.back();
 	};
 	std::for_each(fullExpression.begin(), fullExpression.end(), filler);
 	return result;
 }
 
-void UnarySumOperand::accept(IVisiter* visiter)
+int UnarySumOperand::accept(IVisiterPriority* visiter)
 {
-	visiter->visit(this);
+	return visiter->visit(this);
 }
 
 bool UnarySumOperand::accept(IVisiterIsOperand* visiter)

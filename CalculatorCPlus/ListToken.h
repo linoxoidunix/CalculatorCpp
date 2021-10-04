@@ -57,11 +57,6 @@ public:
 		if (workList.size() < 2)
 			return { std::make_shared<Number>() };
 		auto iteratorBegin = workList.begin();
-		//if (workList.size() == 2)
-		//{
-		//	iteratorBegin++;
-		//	return std::list<std::shared_ptr<Token>>(iteratorBegin, workList.end());
-		//}
 		iteratorBegin++;
 		return std::list<std::shared_ptr<Token>>(iteratorBegin, workList.end());
 	}
