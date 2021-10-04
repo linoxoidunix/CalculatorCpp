@@ -6,6 +6,7 @@
 #include <list>
 #include "Token.h"
 #include "Executor.h"
+#include "Calculator.h"
 
 
 double operandSum()
@@ -42,18 +43,18 @@ auto operandDiv(double left, Type... args)
     return ((left) / ... / args);
 }
 
-std::list<std::string> split(std::string& s, std::string& delimiter) {
-
-    std::list<std::string> list;
-    size_t beg, pos = 0;
-    while ((beg = s.find_first_not_of(delimiter, pos)) != std::string::npos)
-    {
-        pos = s.find_first_of(delimiter, beg + 1);
-        list.push_back(s.substr(beg, pos - beg));
-        std::cout << s.substr(beg, pos - beg) << std::endl;
-    }
-    return list;
-}
+//std::list<std::string> split(std::string& s, std::string& delimiter) {
+//
+//    std::list<std::string> list;
+//    size_t beg, pos = 0;
+//    while ((beg = s.find_first_not_of(delimiter, pos)) != std::string::npos)
+//    {
+//        pos = s.find_first_of(delimiter, beg + 1);
+//        list.push_back(s.substr(beg, pos - beg));
+//        std::cout << s.substr(beg, pos - beg) << std::endl;
+//    }
+//    return list;
+//}
 
 int main()
 {
@@ -64,29 +65,31 @@ int main()
     //Number c(3);
     //Number d(4);
     Printer printer;
-    //printer.print(a + (b - c) * d);
-    //std::string myExpression = "3 + 6 * 9";
-    std::string myExpression = "3 - 6 - 9 + 9 - 3 + 6";
+    ////printer.print(a + (b - c) * d);
+    std::string myExpression = "3 + 6 * 9";
+    //std::string myExpression = "3 - 6 - 9 + 9 - 3 + 6";
     //std::string myExpression = "3 + 6";
-    //std::string myExpression = "3 + 6 + 9 - 6 * 2 / 4";
+    ////std::string myExpression = "3 + 6 + 9 - 6 * 2 / 4";
+    ////std::string myExpression = "- 3";
+    ////std::string myExpression = "12 / 4 / 3 - 1 - 1";
+    ////std::string myExpression = "12 / 4 - 6 / 3 - 1";
+    //std::string myExpression = "12 / 4 * 3 - 6 * 3 / 2 - 1 * 6";
+    //std::string myExpression = "12 / 4 * 3 - 6 * 3 / 2 + 45";
+    ////std::string myExpression = "12 - 4 - 3 - 1";
     //std::string myExpression = "- 3";
-    //std::string myExpression = "12 / 4 / 3 - 1 - 1";
-    //std::string myExpression = "12 / 4 - 6 / 3 - 1";
-    //std::string myExpression = "12 / 4 * 3 - 6 * 3 / 2 + 1 * 45 - 2";
-    //std::string myExpression = "12 - 4 - 3 - 1";
-
-    std::string delimiter = " ";
-    std::list<std::string> v = split(myExpression, delimiter);
-    TokenFactory factoryToken;
-    std::list<std::shared_ptr<Token>> listTokens;
-    std::for_each(v.begin(), v.end(), [&listTokens, &factoryToken](const std::string v) { auto ptr = std::shared_ptr<Token>(); ptr.reset(factoryToken.produce(v));  listTokens.push_back(ptr); });
-    Executor executor;
-    //Number number6(6);
-    //SumOperand sumOperand;
-    //Number number9(9);
-    //Number number12(12);
-    //executor.calculate(number6, sumOperand, number9, sumOperand, number12);
-    printer.print(std::get<0>(executor.calculate(listTokens)));
+    //std::string delimiter = " ";
+    //std::list<std::string> v = split(myExpression, delimiter);
+    //TokenFactory factoryToken;
+    //std::list<std::shared_ptr<Token>> listTokens;
+    //std::for_each(v.begin(), v.end(), [&listTokens, &factoryToken](const std::string v) { auto ptr = std::shared_ptr<Token>(); ptr.reset(factoryToken.produce(v));  listTokens.push_back(ptr); });
+    //Executor executor;
+    ////Number number6(6);
+    ////SumOperand sumOperand;
+    ////Number number9(9);
+    ////Number number12(12);
+    ////executor.calculate(number6, sumOperand, number9, sumOperand, number12);
+    Calculator myCalculator;
+    printer.print(myCalculator(myExpression));
     return 0;
 }
 

@@ -30,8 +30,7 @@ public:
 	virtual void visit(Number*)		override;
 	virtual int visit(NoOperand*)	override;
 private:
-	//std::list<std::shared_ptr<Token>> tokens;
-	//Number result;
+
 };
 
 

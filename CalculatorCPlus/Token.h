@@ -51,7 +51,6 @@ class Operand : public Token
 public:
 	virtual ~Operand() = default;
 	int getPriority() { return priority; };
-	//virtual void accept(IVisiter* visiter) = 0;
 protected:
 	int priority = 0;
 };
@@ -79,7 +78,7 @@ public:
 	virtual ~BinaryOperand() = default;
 	//virtual void accept(IVisiter* visiter) override {};
 	//int getPriority() { return priority; };
-	//virtual Number calculate() = 0;
+	virtual Number calculate(Number left, Number right) = 0;
 protected:
 	Number left;
 	Number right;
@@ -93,17 +92,17 @@ public:
 	Number operator() (Number left, Number right) { return left * right; };
 	virtual ~MulOperand() = default;
 	virtual void accept(IVisiter* visiter) override;
-	//int getPriority() { return priority; };
+	virtual Number calculate(Number left, Number right) override;
 };
 
 class DivOperand : public BinaryOperand
 {
 public:
-	DivOperand(Number _left = 0, Number _right = 0) :BinaryOperand(_left, _right) { priority = 3; };
+	DivOperand(Number _left = 0, Number _right = 0) :BinaryOperand(_left, _right) { priority = 4; };
 	virtual ~DivOperand() = default;
 	Number operator() (Number left, Number right) { return left / right; };
 	virtual void accept(IVisiter* visiter) override;
-	//int getPriority() { return priority; };
+	virtual Number calculate(Number left, Number right) override;
 };
 
 class SubOperand : public BinaryOperand
@@ -113,7 +112,7 @@ public:
 	~SubOperand() = default;
 	Number operator() (Number left, Number right) { return left - right; };
 	virtual void accept(IVisiter* visiter) override;
-	//int getPriority() { return priority; };
+	virtual Number calculate(Number left, Number right) override;
 };
 
 class SumOperand : public BinaryOperand
@@ -123,6 +122,7 @@ public:
 	~SumOperand() = default;
 	Number operator() (Number left, Number right) { return left + right; };
 	virtual void accept(IVisiter* visiter) override;
+	virtual Number calculate(Number left, Number right) override;
 };
 
 class TokenFactoryBase
