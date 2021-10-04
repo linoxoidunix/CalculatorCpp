@@ -12,11 +12,13 @@ double Calculator::operator()(std::string myExpression)
 {
     std::string delimiter = " ";
     std::list<std::string> v = split(myExpression, delimiter);
-    TokenFactory factoryToken;
-    std::list<std::shared_ptr<Token>> listTokens;
-    std::for_each(v.begin(), v.end(), [&listTokens, &factoryToken](const std::string v) { auto ptr = std::shared_ptr<Token>(); ptr.reset(factoryToken.produce(v));  listTokens.push_back(ptr); });
+    //BinaryTokenFactory factoryToken;
+    //std::list<std::shared_ptr<Token>> listTokens;
+    //std::for_each(v.begin(), v.end(), [&listTokens, &factoryToken](const std::string v) { auto ptr = std::shared_ptr<Token>(); ptr.reset(factoryToken.produce(v));  listTokens.push_back(ptr); });
+    TokensFactory newTokensFactory;
+    auto result = newTokensFactory.produce(v);
     Executor executor;
-    return std::get<0>(executor.calculate(listTokens)).getNumber();
+    return std::get<0>(executor.calculate(result)).getNumber();
 }
 
 std::list<std::string> Calculator::split(std::string& s, std::string& delimiter)

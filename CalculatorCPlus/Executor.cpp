@@ -9,9 +9,10 @@ std::tuple<Number, std::list<std::shared_ptr<Token>>> Executor::calculate(std::l
 	auto rightTokens = myListToken.getRighToken();
 	auto allButFirst = myListToken.getNoFirtsElement();
 	Number* leftNumber = dynamic_cast<Number*>(leftToken.get());
-	std::tuple<Number, std::list<std::shared_ptr<Token>>> result = std::make_tuple(*leftNumber, myListToken.getNoFirtsElement());
+	std::tuple<Number, std::list<std::shared_ptr<Token>>> result;
 	if (leftNumber != nullptr)
 	{
+		result = std::make_tuple(*leftNumber, myListToken.getNoFirtsElement());
 		if (dynamic_cast<BinaryOperand*>(operandToken.get()) != nullptr)
 		{
 			if (basePriority < dynamic_cast<Operand*>(operandToken.get())->getPriority())
@@ -60,6 +61,12 @@ std::tuple<Number, std::list<std::shared_ptr<Token>>> Executor::calculate(std::l
 			return std::make_tuple(*leftNumber, std::list<std::shared_ptr<Token>>());
 		}
 	}
+	else
+	{
+		UnaryOperand* operand = dynamic_cast<UnaryOperand*>(operandToken.get());
+		auto tuple = calculate(allButFirst, basePriority);
+		result = std::make_tuple(operand->calculate(std::get<0>(tuple)), std::get<1>(tuple));
+	}
 	return result;
 }
 
@@ -90,6 +97,16 @@ void Executor::visit(Number* number)
 }
 
 int Executor::visit(NoOperand* op)
+{
+	return op->getPriority();
+}
+
+int Executor::visit(UnarySubOperand* op)
+{
+	return op->getPriority();
+}
+
+int Executor::visit(UnarySumOperand* op)
 {
 	return op->getPriority();
 }

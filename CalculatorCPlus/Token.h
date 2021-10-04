@@ -3,14 +3,17 @@
 
 #include <string>
 #include <iostream>
+#include <list>
 
 class IVisiter;
+class IVisiterIsOperand;
 
 class Token
 {
 public:
 	virtual ~Token() = default;
 	virtual void accept(IVisiter* visiter) = 0;
+	virtual bool accept(IVisiterIsOperand* visiter) = 0;
 };
 
 class Number : public Token
@@ -40,8 +43,8 @@ public:
 		return *this;
 	}
 	virtual void accept(IVisiter* visiter) override;
+	virtual bool accept(IVisiterIsOperand* visiter) override;
 
-	//friend Number operator+ (Number& leftNumber, Number& rightNumber);
 private:
 	double myNumber;
 };
@@ -58,10 +61,35 @@ protected:
 class UnaryOperand : public Operand
 {
 public:
+	UnaryOperand(Number& newNumber) : number(newNumber) {};
 	virtual ~UnaryOperand() = default;
-	//int getPriority() { return priority; };
-	//virtual void accept(IVisiter* visiter) = 0;
+	virtual Number calculate(Number number) = 0;
+protected:
+	Number number;
 };
+
+class UnarySubOperand : public UnaryOperand
+{
+public:
+	UnarySubOperand(Number newNumber = 0) : UnaryOperand(newNumber) { priority = 2; };
+	~UnarySubOperand() = default;
+	Number operator() (Number left) { return Number(0) - left; };
+	virtual void accept(IVisiter* visiter) override;
+	virtual bool accept(IVisiterIsOperand* visiter) override;
+	virtual Number calculate(Number number) override;
+};
+
+class UnarySumOperand : public UnaryOperand
+{
+public:
+	UnarySumOperand(Number newNumber = 0) : UnaryOperand(newNumber) { priority = 1; };
+	~UnarySumOperand() = default;
+	Number operator() (Number left) { return Number(0) + left; };
+	virtual void accept(IVisiter* visiter) override;
+	virtual bool accept(IVisiterIsOperand* visiter) override;
+	virtual Number calculate(Number number) override;
+};
+
 //
 class NoOperand : public Operand
 {
@@ -69,6 +97,7 @@ public:
 	NoOperand() = default;
 	virtual ~NoOperand() = default;
 	virtual void accept(IVisiter* visiter) override;
+	virtual bool accept(IVisiterIsOperand* visiter) override;
 };
 //
 class BinaryOperand : public Operand
@@ -92,6 +121,7 @@ public:
 	Number operator() (Number left, Number right) { return left * right; };
 	virtual ~MulOperand() = default;
 	virtual void accept(IVisiter* visiter) override;
+	virtual bool accept(IVisiterIsOperand* visiter) override;
 	virtual Number calculate(Number left, Number right) override;
 };
 
@@ -102,6 +132,7 @@ public:
 	virtual ~DivOperand() = default;
 	Number operator() (Number left, Number right) { return left / right; };
 	virtual void accept(IVisiter* visiter) override;
+	virtual bool accept(IVisiterIsOperand* visiter) override;
 	virtual Number calculate(Number left, Number right) override;
 };
 
@@ -112,6 +143,7 @@ public:
 	~SubOperand() = default;
 	Number operator() (Number left, Number right) { return left - right; };
 	virtual void accept(IVisiter* visiter) override;
+	virtual bool accept(IVisiterIsOperand* visiter) override;
 	virtual Number calculate(Number left, Number right) override;
 };
 
@@ -122,8 +154,41 @@ public:
 	~SumOperand() = default;
 	Number operator() (Number left, Number right) { return left + right; };
 	virtual void accept(IVisiter* visiter) override;
+	virtual bool accept(IVisiterIsOperand* visiter) override;
 	virtual Number calculate(Number left, Number right) override;
 };
+
+class IVisiterIsOperand
+{
+public:
+	virtual bool visit(MulOperand*) = 0;
+	virtual bool visit(DivOperand*) = 0;
+	virtual bool visit(SubOperand*) = 0;
+	virtual bool visit(SumOperand*) = 0;
+	virtual bool visit(Number*) = 0;
+	virtual bool visit(NoOperand*) = 0;
+	virtual bool visit(UnarySubOperand*) = 0;
+	virtual bool visit(UnarySumOperand*) = 0;
+	virtual ~IVisiterIsOperand() = default;
+};
+
+class TokenIsOperand : public IVisiterIsOperand
+{
+public:
+	TokenIsOperand() {};
+	inline virtual bool visit(MulOperand*) override { return true; };
+	inline virtual bool visit(DivOperand*) override { return true; };
+	inline virtual bool visit(SubOperand*) override { return true; };
+	inline virtual bool visit(SumOperand*) override { return true; };
+	inline virtual bool visit(Number*) override { return false; };
+	inline virtual bool visit(NoOperand*) override { return true; };
+	inline virtual bool visit(UnarySubOperand*) override { return true; };
+	inline virtual bool visit(UnarySumOperand*) override { return true; };
+
+private:
+	Token* myToken;
+};
+
 
 class TokenFactoryBase
 {
@@ -132,10 +197,10 @@ public:
 	~TokenFactoryBase() = default;
 };
 
-class TokenFactory : public TokenFactoryBase
+class BinaryTokenFactory : public TokenFactoryBase
 {
 public:
-	TokenFactory() = default;
+	BinaryTokenFactory() = default;
 	virtual Token* produce(std::string expression) const override 
 	{
 		if (expression == "*")
@@ -157,8 +222,45 @@ public:
 		}
 		return new NoOperand();
 	}
-	~TokenFactory() = default;
+	~BinaryTokenFactory() = default;
 };
+
+class UnaryTokenFactory : public TokenFactoryBase
+{
+public:
+	UnaryTokenFactory() = default;
+	virtual Token* produce(std::string expression) const override
+	{
+		//if (expression == "*")
+		//	return new MulOperand();
+		//if (expression == "/")
+		//	return new DivOperand();
+		if (expression == "+")
+			return new UnarySumOperand();
+		if (expression == "-")
+			return new UnarySubOperand();
+		return nullptr;
+		//return new NoOperand();
+	}
+	~UnaryTokenFactory() = default;
+};
+
+
+class TokensFactoryBase
+{
+public:
+	virtual std::list<std::shared_ptr<Token>> produce(std::list<std::string> listExpression) const = 0;
+	~TokensFactoryBase() = default;
+};
+
+class TokensFactory : public TokensFactoryBase
+{
+public:
+	TokensFactory() = default;
+	virtual std::list<std::shared_ptr<Token>> produce(std::list<std::string> listExpression) const override;
+	~TokensFactory() = default;
+};
+
 
 class Printer
 {

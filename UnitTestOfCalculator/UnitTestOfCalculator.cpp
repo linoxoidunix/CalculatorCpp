@@ -48,5 +48,37 @@ namespace UnitTestOfCalculator
 			Calculator myCalculator;
 			Assert::IsTrue(myCalculator("- 3") == -3);
 		}
+
+		TEST_METHOD(TestMethod7)
+		{
+			Calculator myCalculator;
+			Assert::IsTrue(myCalculator("- - 3 - - 2") == 5);
+		}
+
+		TEST_METHOD(TestMethod8)
+		{
+			Calculator myCalculator;
+			Assert::IsTrue(myCalculator("- - 3 - - - 2") == 1);
+		}
+
+		TEST_METHOD(TestMethod9)
+		{
+			Calculator myCalculator;
+			Assert::IsTrue(myCalculator("- - 3 * - - - - 2 + 1") == 7);
+		}
+
+		TEST_METHOD(TestMethod10)
+		{
+			Calculator myCalculator;
+			Assert::IsTrue(myCalculator("- - 3 * - - - - 2 + + 1") == 7);
+		}
+
+		TEST_METHOD(TestMethod11)
+		{
+			Calculator myCalculator;
+			Assert::IsTrue(myCalculator("- - 3 * - - - - 2 + + - - + 1") == 7);
+		}
+
+
 	};
 }

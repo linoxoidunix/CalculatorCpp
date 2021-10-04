@@ -14,6 +14,8 @@ public:
 	virtual int visit(SumOperand*) = 0;
 	virtual void visit(Number*) = 0;
 	virtual int visit(NoOperand*) = 0;
+	virtual int visit(UnarySubOperand*) = 0;
+	virtual int visit(UnarySumOperand*) = 0;
 	virtual ~IVisiter() = default;
 };
 
@@ -29,6 +31,8 @@ public:
 	virtual int visit(SumOperand*) override;
 	virtual void visit(Number*)		override;
 	virtual int visit(NoOperand*)	override;
+	virtual int visit(UnarySubOperand*) override;
+	virtual int visit(UnarySumOperand*) override;
 private:
 
 };
