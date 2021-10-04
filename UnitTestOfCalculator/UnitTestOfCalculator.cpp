@@ -79,6 +79,12 @@ namespace UnitTestOfCalculator
 			Assert::IsTrue(myCalculator("- - 3 * - - - - 2 + + - - + 1") == 7);
 		}
 
+		TEST_METHOD(TestMethod12)
+		{
+			Calculator myCalculator;
+			Assert::IsTrue(myCalculator("- - + + - - + + + + 12 / - - + + - - 4 * + - - 3 - - - 6 * - - 3 / - - 2 + + - - + 45") == 45);
+		}
+
 
 	};
 }

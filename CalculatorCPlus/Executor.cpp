@@ -21,38 +21,16 @@ std::tuple<Number, std::list<std::shared_ptr<Token>>> Executor::calculate(std::l
 				auto tuple = calculate(rightTokens, operand->getPriority());
 				result = std::make_tuple(operand->calculate(*leftNumber, std::get<0>(tuple)), std::get<1>(tuple));
 				ListToken nextToken(std::get<1>(result));
-				if (!std::get<1>(result).empty() && dynamic_cast<Operand*>(nextToken.getLeftToken().get())->getPriority() > basePriority)
+				auto childList = std::get<1>(result);
+				if (!std::get<1>(result).empty())
 				{
-					std::list<std::shared_ptr<Token>> newTokens;
-					std::shared_ptr<Token> ptr;
-					ptr.reset(new Number(std::get<0>(result).getNumber()));
-					newTokens.push_back(ptr);
-					std::list<std::shared_ptr<Token>> RestedToken;
-					std::list<std::shared_ptr<Token>>::iterator beginRest = std::get<1>(tuple).begin();
-					std::list<std::shared_ptr<Token>>::iterator endRest = std::get<1>(tuple).end();
-					for (auto elem : std::get<1>(tuple))
+					if (dynamic_cast<Operand*>(nextToken.getLeftToken().get())->getPriority() > basePriority)
 					{
-						if (dynamic_cast<Operand*>(elem.get()) != 0)
-							if (dynamic_cast<Operand*>(elem.get())->getPriority() < operand->getPriority())
-							{
-								while (beginRest != endRest)
-								{
-									RestedToken.push_back(*beginRest);
-									beginRest++;
-								}
-								break;
-							}
-						newTokens.push_back(elem);
+						std::shared_ptr<Token> ptr;
+						ptr.reset(new Number(std::get<0>(result)));
+						childList.insert(childList.begin(), ptr);
+						result = calculate(childList);
 					}
-					auto intermediateValue = std::get<0>(calculate(newTokens));
-					newTokens.clear();
-					ptr.reset(new Number(intermediateValue));
-					newTokens.push_back(ptr);
-					for (auto elem : RestedToken)
-					{
-						newTokens.push_back(elem);
-					}
-					result = calculate(newTokens, basePriority);
 				}
 			}
 		}

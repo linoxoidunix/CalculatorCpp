@@ -18,13 +18,13 @@ int main()
     //Number d(4);
     Printer printer;
     ////printer.print(a + (b - c) * d);
-    //std::string myExpression = "3 + 6 * 9";
+    //std::string myExpression = "3 + 6 * 9 + 1";
     //std::string myExpression = "3 - 6 - 9 + 9 - 3 + 6";
     //std::string myExpression = "3 + 6";
     ////std::string myExpression = "3 + 6 + 9 - 6 * 2 / 4";
     ////std::string myExpression = "- 3";
-    ////std::string myExpression = "12 / 4 / 3 - 1 - 1";
-    ////std::string myExpression = "12 / 4 - 6 / 3 - 1";
+    //std::string myExpression = "12 / 4 / 3 - 1 - 1";
+    //std::string myExpression = "3 - 6 / 3 - 1";
     //std::string myExpression = "12 / 4 * 3 - 6 * 3 / 2 - 1 * 6";
     //std::string myExpression = "12 / 4 * 3 - 6 * 3 / 2 + 45";
     ////std::string myExpression = "12 - 4 - 3 - 1";
