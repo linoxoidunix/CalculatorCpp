@@ -45,7 +45,7 @@ bool MulOperand::accept(IVisiterIsOperand* visiter)
 //	return std::tuple<Number, std::list<std::shared_ptr<Token>>>();
 //}
 
-Number MulOperand::calculate(Number left, Number right)
+Number& MulOperand::calculate(Number& left, Number& right)
 {
 	return left * right;
 }
@@ -67,7 +67,7 @@ bool SubOperand::accept(IVisiterIsOperand* visiter)
 //	visiter->
 //}
 
-Number SubOperand::calculate(Number left, Number right)
+Number& SubOperand::calculate(Number& left, Number& right)
 {
 	return left - right;
 }
@@ -87,7 +87,7 @@ bool SumOperand::accept(IVisiterIsOperand* visiter)
 //	return std::tuple<Number, std::list<std::shared_ptr<Token>>>();
 //}
 
-Number SumOperand::calculate(Number left, Number right)
+Number& SumOperand::calculate(Number& left, Number& right)
 {
 	return left + right;
 }
@@ -107,7 +107,7 @@ bool DivOperand::accept(IVisiterIsOperand* visiter)
 //	return std::tuple<Number, std::list<std::shared_ptr<Token>>>();
 //}
 
-Number DivOperand::calculate(Number left, Number right)
+Number& DivOperand::calculate(Number& left, Number& right)
 {
 	if (right.getNumber() == 0)
 		throw std::out_of_range("divided by 0");
@@ -129,7 +129,7 @@ bool UnarySubOperand::accept(IVisiterIsOperand* visiter)
 //	return std::tuple<Number, std::list<std::shared_ptr<Token>>>();
 //}
 
-Number UnarySubOperand::calculate(Number number)
+Number& UnarySubOperand::calculate(Number& number)
 {
 	return Number(0) - number;
 }
@@ -180,7 +180,7 @@ bool UnarySumOperand::accept(IVisiterIsOperand* visiter)
 //	return std::tuple<Number, std::list<std::shared_ptr<Token>>>();
 //}
 
-Number UnarySumOperand::calculate(Number number)
+Number& UnarySumOperand::calculate(Number& number)
 {
 	return number;
 }
@@ -204,3 +204,9 @@ bool RightBracketOperand::accept(IVisiterIsOperand* visiter)
 {
 	return visiter->visit(this);
 }
+
+//void Printer::print(Number& number)
+//{
+//}
+
+

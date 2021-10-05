@@ -16,7 +16,7 @@ public:
 	virtual ~Token() = default;
 	virtual int accept(IVisiterPriority* visiter) = 0;
 	virtual bool accept(IVisiterIsOperand* visiter) = 0;
-	//virtual std::tuple<Number, std::list<std::shared_ptr<Token>>> accept(IvisiterCalculator* visiter) = 0;
+	virtual std::string print() = 0;
 };
 
 class Number : public Token
@@ -24,7 +24,7 @@ class Number : public Token
 public:
 	Number(double _myNumber = 0) : myNumber(_myNumber) {};
 	virtual ~Number() = default;
-	double getNumber() { return myNumber; }
+	double getNumber() const { return myNumber; }
 	Number& operator+ (Number& rightNumber)
 	{
 		myNumber += rightNumber.getNumber();
@@ -47,7 +47,24 @@ public:
 	}
 	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
-	//virtual std::tuple<Number, std::list<std::shared_ptr<Token>>> accept(IvisiterCalculator* visiter) override;
+	
+	friend std::ostream& operator<< (std::ostream& os, const Number& left)
+	{
+		os << left.getNumber();
+		return os;
+	}
+	virtual std::string print() override
+	{
+		auto s = std::to_string(myNumber);
+		if (s[s.size() - 1] == '0')
+			for (size_t i = s.size() - 1; s[i] == '0'; i--)
+				s.erase(i, 1);
+		if (s[s.size() - 1] == '.')
+			s.erase(s.size() - 1, 1);
+		return s;
+	}
+
+
 
 private:
 	double myNumber;
@@ -70,7 +87,7 @@ public:
 	UnaryOperand() : UnaryOperand(0) {};
 
 	virtual ~UnaryOperand() = default;
-	virtual Number calculate(Number number) = 0;
+	virtual Number& calculate(Number& number) = 0;
 protected:
 	Number number;
 };
@@ -83,8 +100,8 @@ public:
 	Number operator() (Number left) { return Number(0) - left; };
 	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
-	//virtual std::tuple<Number, std::list<std::shared_ptr<Token>>> accept(IvisiterCalculator* visiter) override;
-	virtual Number calculate(Number number) override;
+	virtual std::string print() override { return "-"; };
+	virtual Number& calculate(Number& number) override;
 };
 
 class UnarySumOperand : public UnaryOperand
@@ -95,9 +112,8 @@ public:
 	Number operator() (Number left) { return Number(0) + left; };
 	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
-	//virtual std::tuple<Number, std::list<std::shared_ptr<Token>>> accept(IvisiterCalculator* visiter) override;
-
-	virtual Number calculate(Number number) override;
+	virtual std::string print() override { return "+"; };
+	virtual Number& calculate(Number& number) override;
 };
 
 //
@@ -117,7 +133,7 @@ public:
 	BinaryOperand(Number& _left, Number& _right) : left(_left), right(_right) {};
 	BinaryOperand() : left(Number(0)), right(Number(0)) {};
 	virtual ~BinaryOperand() = default;
-	virtual Number calculate(Number left, Number right) = 0;
+	virtual Number& calculate(Number& left, Number& right) = 0;
 protected:
 	Number left;
 	Number right;
@@ -132,8 +148,8 @@ public:
 	virtual ~MulOperand() = default;
 	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
-	//virtual std::tuple<Number, std::list<std::shared_ptr<Token>>> accept(IvisiterCalculator* visiter) override;
-	virtual Number calculate(Number left, Number right) override;
+	virtual std::string print() override { return "*"; };
+	virtual Number& calculate(Number& left, Number& right) override;
 };
 
 class DivOperand : public BinaryOperand
@@ -144,8 +160,8 @@ public:
 	Number operator() (Number left, Number right) { if (right.getNumber() == 0) throw std::out_of_range("divided by 0"); return left / right; };
 	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
-	//virtual std::tuple<Number, std::list<std::shared_ptr<Token>>> accept(IvisiterCalculator* visiter) override;
-	virtual Number calculate(Number left, Number right) override;
+	virtual std::string print() override { return "/"; };
+	virtual Number& calculate(Number& left, Number& right) override;
 };
 
 class SubOperand : public BinaryOperand
@@ -156,8 +172,8 @@ public:
 	Number operator() (Number left, Number right) { return left - right; };
 	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
-	//virtual std::tuple<Number, std::list<std::shared_ptr<Token>>> accept(IvisiterCalculator* visiter) override;
-	virtual Number calculate(Number left, Number right) override;
+	virtual std::string print() override { return "-"; };
+	virtual Number& calculate(Number& left, Number& right) override;
 };
 
 class SumOperand : public BinaryOperand
@@ -168,8 +184,8 @@ public:
 	Number operator() (Number left, Number right) { return left + right; };
 	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
-	//virtual std::tuple<Number, std::list<std::shared_ptr<Token>>> accept(IvisiterCalculator* visiter) override;
-	virtual Number calculate(Number left, Number right) override;
+	virtual std::string print() override { return "+"; };
+	virtual Number& calculate(Number& left, Number& right) override;
 };
 
 class LeftBracketOperand : public UnaryOperand
@@ -179,8 +195,8 @@ public:
 	~LeftBracketOperand() = default;
 	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
-	//virtual std::tuple<Number, std::list<std::shared_ptr<Token>>> accept(IvisiterCalculator* visiter) override;
-	virtual Number calculate(Number leftNumber) override { return leftNumber; };
+	virtual std::string print() override { return "("; };
+	virtual Number& calculate(Number& leftNumber) override { return leftNumber; };
 };
 
 class RightBracketOperand : public UnaryOperand
@@ -190,8 +206,8 @@ public:
 	~RightBracketOperand() = default;
 	virtual int accept(IVisiterPriority* visiter) override;
 	virtual bool accept(IVisiterIsOperand* visiter) override;
-	//virtual std::tuple<Number, std::list<std::shared_ptr<Token>>> accept(IvisiterCalculator* visiter) override;
-	virtual Number calculate(Number leftNumber) override { return leftNumber; };
+	virtual std::string print() override { return ")"; };
+	virtual Number& calculate(Number& leftNumber) override { return leftNumber; };
 };
 
 class IVisiterIsOperand
@@ -303,13 +319,16 @@ public:
 	~TokensFactory() = default;
 };
 
+#include <algorithm>
 
 class Printer
 {
 public:
 	Printer() = default;
-	void print(Number& number) { std::cout << number.getNumber() << std::endl; }
-	void print(Number&& number) { std::cout << number.getNumber() << std::endl; }
+	template<typename T>
+	inline void print(T&& number) { std::cout << number << std::endl; };
+	inline std::string printToString(const std::shared_ptr<Token>& token) { return token->print(); }
+	inline std::string printToString(std::list<std::shared_ptr<Token>>& list) { std::string result;  std::for_each(list.begin(), list.end(), [&result, this](const std::shared_ptr<Token> currentToken) {result += this->printToString(currentToken); }); return result; }
 };
 
 #endif // !_TOKEN_H_

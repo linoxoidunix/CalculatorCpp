@@ -40,12 +40,20 @@ std::tuple<Number, std::list<std::shared_ptr<Token>>> Executor::calculate(std::l
 			}
 		}
 		else
+		if(operandToken)
+			return std::make_tuple(*leftNumber, allButFirst);
+		else
 			return std::make_tuple(*leftNumber, rightTokens);
 	}
 	else
 	{
 		UnaryOperand* operand = dynamic_cast<UnaryOperand*>(operandToken.get());
-    	//если не левая скобка
+		//если найдена правая скобка, такого быть не может из-за getokensBeforeRightBracket(allButFirst);
+		if (dynamic_cast<RightBracketOperand*>(operandToken.get()))
+		{
+			throw std::logic_error("founded right bracket without left bracket");
+		}
+		//если не левая скобка
 		if (!dynamic_cast<LeftBracketOperand*>(operandToken.get()))
 		{
 			auto tuple = calculate(allButFirst, basePriority);
