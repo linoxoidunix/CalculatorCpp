@@ -85,6 +85,21 @@ namespace UnitTestOfCalculator
 			Assert::IsTrue(myCalculator("- - + + - - + + + + 12 / - - + + - - 4 * + - - 3 - - - 6 * - - 3 / - - 2 + + - - + 45") == 45);
 		}
 
+		TEST_METHOD(TestMethod13)
+		{
+			Calculator myCalculator;
+			//auto func = [&myCalculator]() {myCalculator("- - + + - - + + + + 12 / - - + + - - 4 * + - - 3 - - - 6 * - - 3 / - - 0 + + - - + 45"); };
+			auto func = [&myCalculator]() {myCalculator("3 / 0"); };
+			Assert::ExpectException<std::out_of_range>(func);
+			//Assert::IsTrue(myCalculator("-3 / 0") == -777);
+		}
+
+		TEST_METHOD(TestMethod14)
+		{
+			Calculator myCalculator;
+			Assert::IsTrue(myCalculator("( 2 / ( 1 + 1 ) - 2 / ( 1 + 1 ) ) / ( 2 - 1 ) + ( 0 )") == 0);
+		}
+
 
 	};
 }

@@ -23,14 +23,21 @@ int main()
     //std::string myExpression = "3 - 6 - 9 + 9 - 3 + 6";
     //std::string myExpression = "3 + 6";
     ////std::string myExpression = "3 + 6 + 9 - 6 * 2 / 4";
-    ////std::string myExpression = "- 3";
+    //std::string myExpression = " - - 3 * 2 + 1";
     //std::string myExpression = "12 / 4 / 3 - 1 - 1";
     //std::string myExpression = "3 - 6 / 3 - 1";
     //std::string myExpression = "12 / 4 * 3 - 6 * 3 / 2 - 1 * 6";
     //std::string myExpression = "12 / 4 * 3 - 6 * 3 / 2 + 45";
     ////std::string myExpression = "12 - 4 - 3 - 1";
-    std::string myExpression = "3 * - 2 + + 1";
+    //std::string myExpression = "3 * - 2 + + 1";
+    //std::string myExpression = "3 / 0";
+    std::string myExpression = "( 2 / ( 1 + 1 ) - 2 / ( 1 + 1 ) ) / ( 2 - 1 ) + ( 0 )";
+    //std::string myExpression = "( 6 + 3 )";
+    //std::string myExpression = "2 / ( 1 + 1 ) - 1";
+    //std::string myExpression = "12 / 4 * + 3 - - - 6 * - - 3 / - - 2 + + - - + 45";
+
     Calculator myCalculator;
+    //myCalculator(myExpression);
     printer.print(myCalculator(myExpression));
     return 0;
 }

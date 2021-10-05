@@ -24,7 +24,8 @@ public:
 	std::shared_ptr<Token> getLeftToken()
 	{
 		if (workList.empty())
-			return std::make_shared<Number>();
+			//return std::make_shared<Number>();
+			return std::shared_ptr<Token>();
 		return workList.front();
 	}
 	std::shared_ptr<Token> getOperandToken()
@@ -55,7 +56,8 @@ public:
 	std::list<std::shared_ptr<Token>> getNoFirtsElement()
 	{
 		if (workList.size() < 2)
-			return { std::make_shared<Number>() };
+			//return { std::make_shared<Number>() };
+			return std::list<std::shared_ptr<Token>>();
 		auto iteratorBegin = workList.begin();
 		iteratorBegin++;
 		return std::list<std::shared_ptr<Token>>(iteratorBegin, workList.end());
