@@ -7,7 +7,16 @@
 class Calculator
 {
 public:
-	Calculator();
+	Calculator() = default;
+	double operator()(std::string s);
+private:
+	std::list<std::string> split(std::string& s, std::string& delimiter);
+};
+
+class CalculatorNew
+{
+public:
+	CalculatorNew();
 	double operator()(std::string s);
 private:
 	std::list<std::string> split(std::string& s, std::string& delimiter);

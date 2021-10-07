@@ -46,39 +46,55 @@ public:
 	virtual void visit(SumOperand*) = 0;
 	virtual void visit(Number*) = 0;
 	virtual void visit(NoOperand*) = 0;
-	virtual std::tuple<Number, std::list<std::shared_ptr<Token>>> visit(UnarySubOperand*) = 0;
+	virtual Answer visit(UnarySubOperand*) = 0;
 	virtual void visit(UnarySumOperand*) = 0;
 	virtual ~IVisiterCalculator() = default;
 protected:
-	std::list<std::shared_ptr<Token>> localTokens;
+	ListTokens localTokens;
 };
 
 class VisiterCalculator : public IVisiterCalculator
 {
 public:
-	VisiterCalculator(std::list<std::shared_ptr<Token>> _tokens) {localTokens = _tokens;}
+	VisiterCalculator(ListTokens _tokens) {localTokens = _tokens;}
 	virtual void visit(MulOperand*) override {};
 	virtual void visit(DivOperand*) override {};
 	virtual void visit(SubOperand*) override {};
 	virtual void visit(SumOperand*) override {};
 	virtual void visit(Number*)		override;
 	virtual void visit(NoOperand*)	override {};
-	virtual std::tuple<Number, std::list<std::shared_ptr<Token>>> visit(UnarySubOperand*) override;
+	virtual Answer visit(UnarySubOperand*) override;
 	virtual void visit(UnarySumOperand*) override {};
 	virtual ~VisiterCalculator() = default;
 
 };
 
+class IExecutor
+{
+public:
+	virtual Answer calculate(ListTokens _tokens, int basePriority = 0) = 0;
+};
 
-class Executor
+
+class Executor : public IExecutor
 {
 public:
 	Executor();
-	std::tuple<Number, std::list<std::shared_ptr<Token>>> calculate(std::list<std::shared_ptr<Token>> _tokens, int basePriority = 0);
+	virtual Answer calculate(ListTokens _tokens, int basePriority = 0) override;
+	~Executor() = default;
 private:
 	// output.first - выражение до правой скобки
 	// output.second - выражение после правой скобки
-	std::tuple<std::list<std::shared_ptr<Token>>, std::list<std::shared_ptr<Token>>> getokensBeforeRightBracket(std::list<std::shared_ptr<Token>> _tokens);
+	std::tuple<ListTokens, ListTokens> getokensBeforeRightBracket(ListTokens _tokens);
+};
+
+class ExecutorVersion2 : public IExecutor
+{
+public:
+	ExecutorVersion2() {};
+	virtual Answer calculate(ListTokens _tokens, int basePriority = 0) override;
+	~ExecutorVersion2() = default;
+
 };
 
 #endif

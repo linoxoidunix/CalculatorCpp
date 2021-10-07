@@ -3,6 +3,7 @@
 
 #include<list>
 #include "Token.h"
+
 class structToken
 {
 	std::shared_ptr<Token> current;
@@ -20,11 +21,11 @@ public:
 class ListToken
 {
 public:
-	ListToken(std::list<std::shared_ptr<Token>> listTokens);
+	ListToken(ListTokens listTokens);
+	ListToken() : ListToken(ListTokens()) {};
 	std::shared_ptr<Token> getLeftToken()
 	{
 		if (workList.empty())
-			//return std::make_shared<Number>();
 			return std::shared_ptr<Token>();
 		return workList.front();
 	}
@@ -39,32 +40,41 @@ public:
 		iteratorBegin++;
 		return *(iteratorBegin);
 	}
-	std::list<std::shared_ptr<Token>> getRighToken()
+	ListTokens getRighToken()
 	{
 		if (workList.size() < 2)
-			return { std::make_shared<Number>() };
+			return ListTokens();
 		auto iteratorBegin = workList.begin();
 		if (workList.size() == 2)
 		{
 			iteratorBegin++;
-			return std::list<std::shared_ptr<Token>>(iteratorBegin, workList.end());
+			return ListTokens(iteratorBegin, workList.end());
 		}
 		iteratorBegin++;
 		iteratorBegin++;
-		return std::list<std::shared_ptr<Token>>(iteratorBegin, workList.end());
+		return ListTokens(iteratorBegin, workList.end());
 	}
-	std::list<std::shared_ptr<Token>> getNoFirtsElement()
+	ListTokens getNoFirtsElement()
 	{
 		if (workList.size() < 2)
 			//return { std::make_shared<Number>() };
-			return std::list<std::shared_ptr<Token>>();
+			return ListTokens();
 		auto iteratorBegin = workList.begin();
 		iteratorBegin++;
-		return std::list<std::shared_ptr<Token>>(iteratorBegin, workList.end());
+		return ListTokens(iteratorBegin, workList.end());
 	}
+	SmartToken getFirstToken();
+	SmartToken getSecondToken();
+	SmartToken getThirdToken();
+	ListTokens getAllExceptFirst();
+	ListTokens getAllExceptFirstAndSecond();
+	SmartToken getFirstOperand();
+	inline bool isEmpty() { return workList.empty(); };
+	bool operator () (ListTokens& newList) { return !newList.empty(); }
+	ListToken& operator =(const ListToken& list) { workList = list.workList; return *this; }
 	std::list<structToken> getStructedToken() const { return listStructToken; }
 private:
-	std::list<std::shared_ptr<Token>> workList;
+	ListTokens workList;
 	std::list<structToken> listStructToken;
 };
 #endif

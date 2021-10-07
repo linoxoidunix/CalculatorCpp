@@ -118,7 +118,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
@@ -143,16 +143,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CalculatedModule.cpp" />
     <ClCompile Include="Calculator.cpp" />
     <ClCompile Include="CalculatorCPlus.cpp" />
     <ClCompile Include="Executor.cpp" />
     <ClCompile Include="ListToken.cpp" />
+    <ClCompile Include="ParserListToken.cpp" />
     <ClCompile Include="Token.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calculator.h" />
+    <ClInclude Include="CONSTANTS.h" />
     <ClInclude Include="Executor.h" />
     <ClInclude Include="ListToken.h" />
+    <ClInclude Include="CalculatedModule.h" />
+    <ClInclude Include="ParserListToken.h" />
     <ClInclude Include="Token.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

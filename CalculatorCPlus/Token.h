@@ -4,18 +4,29 @@
 #include <string>
 #include <iostream>
 #include <list>
+#include "CONSTANTS.h"
 
 class IVisiterPriority;
 class IVisiterIsOperand;
 class IvisiterCalculator;
 class Number;
 
+enum class TypeToken
+{
+	TYPE_NUMBER,
+	TYPE_LEFT_BRACKET,
+	TYPE_UNARY_OPERAND,
+	TYPE_BINARY_OPERAND,
+	TYPE_RIGHT_BRACKET,
+	TYPE_NO_TOKEN,
+};
+
 class Token
 {
 public:
 	virtual ~Token() = default;
 	virtual int accept(IVisiterPriority* visiter) = 0;
-	virtual bool accept(IVisiterIsOperand* visiter) = 0;
+	virtual TypeToken accept(IVisiterIsOperand* visiter) = 0;
 	virtual std::string print() = 0;
 };
 
@@ -46,7 +57,7 @@ public:
 		return *this;
 	}
 	virtual int accept(IVisiterPriority* visiter) override;
-	virtual bool accept(IVisiterIsOperand* visiter) override;
+	virtual TypeToken accept(IVisiterIsOperand* visiter) override;
 	
 	friend std::ostream& operator<< (std::ostream& os, const Number& left)
 	{
@@ -95,11 +106,11 @@ protected:
 class UnarySubOperand : public UnaryOperand
 {
 public:
-	UnarySubOperand(Number newNumber = 0) : UnaryOperand(newNumber) { priority = 2; };
+	UnarySubOperand(Number newNumber = 0) : UnaryOperand(newNumber) { priority = 100; };
 	~UnarySubOperand() = default;
 	Number operator() (Number left) { return Number(0) - left; };
 	virtual int accept(IVisiterPriority* visiter) override;
-	virtual bool accept(IVisiterIsOperand* visiter) override;
+	virtual TypeToken accept(IVisiterIsOperand* visiter) override;
 	virtual std::string print() override { return "-"; };
 	virtual Number& calculate(Number& number) override;
 };
@@ -107,11 +118,11 @@ public:
 class UnarySumOperand : public UnaryOperand
 {
 public:
-	UnarySumOperand(Number newNumber = 0) : UnaryOperand(newNumber) { priority = 1; };
+	UnarySumOperand(Number newNumber = 0) : UnaryOperand(newNumber) { priority = 100; };
 	~UnarySumOperand() = default;
 	Number operator() (Number left) { return Number(0) + left; };
 	virtual int accept(IVisiterPriority* visiter) override;
-	virtual bool accept(IVisiterIsOperand* visiter) override;
+	virtual TypeToken accept(IVisiterIsOperand* visiter) override;
 	virtual std::string print() override { return "+"; };
 	virtual Number& calculate(Number& number) override;
 };
@@ -123,7 +134,7 @@ public:
 	NoOperand() = default;
 	virtual ~NoOperand() = default;
 	virtual int accept(IVisiterPriority* visiter) override;
-	virtual bool accept(IVisiterIsOperand* visiter) override;
+	virtual TypeToken accept(IVisiterIsOperand* visiter) override;
 	//virtual std::tuple<Number, std::list<std::shared_ptr<Token>>> accept(IvisiterCalculator* visiter) override;
 };
 //
@@ -147,7 +158,7 @@ public:
 	Number operator() (Number left, Number right) { return left * right; };
 	virtual ~MulOperand() = default;
 	virtual int accept(IVisiterPriority* visiter) override;
-	virtual bool accept(IVisiterIsOperand* visiter) override;
+	virtual TypeToken accept(IVisiterIsOperand* visiter) override;
 	virtual std::string print() override { return "*"; };
 	virtual Number& calculate(Number& left, Number& right) override;
 };
@@ -155,11 +166,11 @@ public:
 class DivOperand : public BinaryOperand
 {
 public:
-	DivOperand(Number _left = 0, Number _right = 0) :BinaryOperand(_left, _right) { priority = 4; };
+	DivOperand(Number _left = 0, Number _right = 0) :BinaryOperand(_left, _right) { priority = 3; };
 	virtual ~DivOperand() = default;
 	Number operator() (Number left, Number right) { if (right.getNumber() == 0) throw std::out_of_range("divided by 0"); return left / right; };
 	virtual int accept(IVisiterPriority* visiter) override;
-	virtual bool accept(IVisiterIsOperand* visiter) override;
+	virtual TypeToken accept(IVisiterIsOperand* visiter) override;
 	virtual std::string print() override { return "/"; };
 	virtual Number& calculate(Number& left, Number& right) override;
 };
@@ -171,7 +182,7 @@ public:
 	~SubOperand() = default;
 	Number operator() (Number left, Number right) { return left - right; };
 	virtual int accept(IVisiterPriority* visiter) override;
-	virtual bool accept(IVisiterIsOperand* visiter) override;
+	virtual TypeToken accept(IVisiterIsOperand* visiter) override;
 	virtual std::string print() override { return "-"; };
 	virtual Number& calculate(Number& left, Number& right) override;
 };
@@ -183,7 +194,7 @@ public:
 	~SumOperand() = default;
 	Number operator() (Number left, Number right) { return left + right; };
 	virtual int accept(IVisiterPriority* visiter) override;
-	virtual bool accept(IVisiterIsOperand* visiter) override;
+	virtual TypeToken accept(IVisiterIsOperand* visiter) override;
 	virtual std::string print() override { return "+"; };
 	virtual Number& calculate(Number& left, Number& right) override;
 };
@@ -194,7 +205,7 @@ public:
 	LeftBracketOperand() :UnaryOperand() { priority = INT_MIN; };
 	~LeftBracketOperand() = default;
 	virtual int accept(IVisiterPriority* visiter) override;
-	virtual bool accept(IVisiterIsOperand* visiter) override;
+	virtual TypeToken accept(IVisiterIsOperand* visiter) override;
 	virtual std::string print() override { return "("; };
 	virtual Number& calculate(Number& leftNumber) override { return leftNumber; };
 };
@@ -205,7 +216,7 @@ public:
 	RightBracketOperand() :UnaryOperand() { priority = INT_MAX; };
 	~RightBracketOperand() = default;
 	virtual int accept(IVisiterPriority* visiter) override;
-	virtual bool accept(IVisiterIsOperand* visiter) override;
+	virtual TypeToken accept(IVisiterIsOperand* visiter) override;
 	virtual std::string print() override { return ")"; };
 	virtual Number& calculate(Number& leftNumber) override { return leftNumber; };
 };
@@ -213,33 +224,51 @@ public:
 class IVisiterIsOperand
 {
 public:
-	virtual bool visit(MulOperand*) = 0;
-	virtual bool visit(DivOperand*) = 0;
-	virtual bool visit(SubOperand*) = 0;
-	virtual bool visit(SumOperand*) = 0;
-	virtual bool visit(Number*) = 0;
-	virtual bool visit(NoOperand*) = 0;
-	virtual bool visit(UnarySubOperand*) = 0;
-	virtual bool visit(UnarySumOperand*) = 0;
-	virtual bool visit(LeftBracketOperand*) = 0;
-	virtual bool visit(RightBracketOperand*) = 0;
+	virtual TypeToken visit(MulOperand*) = 0;
+	virtual TypeToken visit(DivOperand*) = 0;
+	virtual TypeToken visit(SubOperand*) = 0;
+	virtual TypeToken visit(SumOperand*) = 0;
+	virtual TypeToken visit(Number*) = 0;
+	virtual TypeToken visit(NoOperand*) = 0;
+	virtual TypeToken visit(UnarySubOperand*) = 0;
+	virtual TypeToken visit(UnarySumOperand*) = 0;
+	virtual TypeToken visit(LeftBracketOperand*) = 0;
+	virtual TypeToken visit(RightBracketOperand*) = 0;
 	virtual ~IVisiterIsOperand() = default;
 };
 
 class TokenIsOperand : public IVisiterIsOperand
 {
 public:
-	TokenIsOperand() {};
-	inline virtual bool visit(MulOperand*) override { return true; };
-	inline virtual bool visit(DivOperand*) override { return true; };
-	inline virtual bool visit(SubOperand*) override { return true; };
-	inline virtual bool visit(SumOperand*) override { return true; };
-	inline virtual bool visit(Number*) override { return false; };
-	inline virtual bool visit(NoOperand*) override { return true; };
-	inline virtual bool visit(UnarySubOperand*) override { return true; };
-	inline virtual bool visit(UnarySumOperand*) override { return true; };
-	inline virtual bool visit(LeftBracketOperand*) override { return true; };
-	inline virtual bool visit(RightBracketOperand*) override { return false; };
+	TokenIsOperand() : myToken(nullptr) {};
+	inline virtual TypeToken visit(MulOperand*) override { return TypeToken::TYPE_BINARY_OPERAND; };
+	inline virtual TypeToken visit(DivOperand*) override { return TypeToken::TYPE_BINARY_OPERAND; };
+	inline virtual TypeToken visit(SubOperand*) override { return TypeToken::TYPE_BINARY_OPERAND; };
+	inline virtual TypeToken visit(SumOperand*) override { return TypeToken::TYPE_BINARY_OPERAND; };
+	inline virtual TypeToken visit(Number*) override { return TypeToken::TYPE_NUMBER; };
+	inline virtual TypeToken visit(NoOperand*) override { return TypeToken::TYPE_BINARY_OPERAND; }; //??
+	inline virtual TypeToken visit(UnarySubOperand*) override { return TypeToken::TYPE_UNARY_OPERAND; };
+	inline virtual TypeToken visit(UnarySumOperand*) override { return TypeToken::TYPE_UNARY_OPERAND; };
+	inline virtual TypeToken visit(LeftBracketOperand*) override { return TypeToken::TYPE_LEFT_BRACKET; };
+	inline virtual TypeToken visit(RightBracketOperand*) override { return TypeToken::TYPE_NUMBER; }; // TO DO! пока костыль
+private:
+	Token* myToken;
+};
+
+class TokenIsOperandNew : public IVisiterIsOperand
+{
+public:
+	TokenIsOperandNew() : myToken(nullptr){};
+	inline virtual TypeToken visit(MulOperand*) override { return TypeToken::TYPE_BINARY_OPERAND; };
+	inline virtual TypeToken visit(DivOperand*) override { return TypeToken::TYPE_BINARY_OPERAND; };
+	inline virtual TypeToken visit(SubOperand*) override { return TypeToken::TYPE_BINARY_OPERAND; };
+	inline virtual TypeToken visit(SumOperand*) override { return TypeToken::TYPE_BINARY_OPERAND; };
+	inline virtual TypeToken visit(Number*) override { return TypeToken::TYPE_NUMBER; };
+	inline virtual TypeToken visit(NoOperand*) override { return TypeToken::TYPE_BINARY_OPERAND; }; //??
+	inline virtual TypeToken visit(UnarySubOperand*) override { return TypeToken::TYPE_UNARY_OPERAND; };
+	inline virtual TypeToken visit(UnarySumOperand*) override { return TypeToken::TYPE_UNARY_OPERAND; };
+	inline virtual TypeToken visit(LeftBracketOperand*) override { return TypeToken::TYPE_LEFT_BRACKET; };
+	inline virtual TypeToken visit(RightBracketOperand*) override { return TypeToken::TYPE_RIGHT_BRACKET; }; 
 private:
 	Token* myToken;
 };
@@ -307,7 +336,7 @@ public:
 class TokensFactoryBase
 {
 public:
-	virtual std::list<std::shared_ptr<Token>> produce(std::list<std::string> listExpression) const = 0;
+	virtual ListTokens produce(std::list<std::string> listExpression) const = 0;
 	~TokensFactoryBase() = default;
 };
 
@@ -315,7 +344,7 @@ class TokensFactory : public TokensFactoryBase
 {
 public:
 	TokensFactory() = default;
-	virtual std::list<std::shared_ptr<Token>> produce(std::list<std::string> listExpression) const override;
+	virtual ListTokens produce(std::list<std::string> listExpression) const override;
 	~TokensFactory() = default;
 };
 
@@ -328,7 +357,7 @@ public:
 	template<typename T>
 	inline void print(T&& number) { std::cout << number << std::endl; };
 	inline std::string printToString(const std::shared_ptr<Token>& token) { return token->print(); }
-	inline std::string printToString(std::list<std::shared_ptr<Token>>& list) { std::string result;  std::for_each(list.begin(), list.end(), [&result, this](const std::shared_ptr<Token> currentToken) {result += this->printToString(currentToken); }); return result; }
+	inline std::string printToString(ListTokens& list) { std::string result;  std::for_each(list.begin(), list.end(), [&result, this](const std::shared_ptr<Token> currentToken) {result += this->printToString(currentToken); }); return result; }
 };
 
 #endif // !_TOKEN_H_
