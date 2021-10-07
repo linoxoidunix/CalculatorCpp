@@ -202,7 +202,7 @@ public:
 class LeftBracketOperand : public UnaryOperand
 {
 public:
-	LeftBracketOperand() :UnaryOperand() { priority = INT_MIN; };
+	LeftBracketOperand() :UnaryOperand() { priority = 0; };
 	~LeftBracketOperand() = default;
 	virtual int accept(IVisiterPriority* visiter) override;
 	virtual TypeToken accept(IVisiterIsOperand* visiter) override;
@@ -213,7 +213,7 @@ public:
 class RightBracketOperand : public UnaryOperand
 {
 public:
-	RightBracketOperand() :UnaryOperand() { priority = INT_MAX; };
+	RightBracketOperand() :UnaryOperand() { priority = 0; };
 	~RightBracketOperand() = default;
 	virtual int accept(IVisiterPriority* visiter) override;
 	virtual TypeToken accept(IVisiterIsOperand* visiter) override;

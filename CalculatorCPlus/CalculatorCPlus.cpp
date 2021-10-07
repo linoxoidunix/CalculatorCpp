@@ -26,8 +26,8 @@ int main()
     //std::string myExpression = "12 / 4 * 3 + 1";
     //std::string myExpression = "2 / 3 * 6 + 1 * 1 / 1 - 1 / 1 * 1";
     //std::string myExpression = "12 / 4 * 3 - 6 * 3 / 2 - 45 * 1 - 1 + 1";
-    //std::string myExpression = "1 + 1 / 4";
-    std::string myExpression = "- 1";
+    std::string myExpression = "1 + 2";
+    //std::string myExpression = "- 1";
     //std::string myExpression = "- 2 * - - 1 + 1";
     //std::string myExpression = "12 * 4 / 3";
     //std::string myExpression = "0 - 6 / 3 - 1";
@@ -38,10 +38,11 @@ int main()
     //std::string myExpression = "3 * - 2 + + 1";
     //std::string myExpression = "( 2 / ( 1 + 1 ) - 2 / ( 1 + 1 ) ) / ( 2 - 1 ) + ( 0 )";
     //std::string myExpression = "( 2 / ( 1 + 1 ) - 2 / ( 1 + 1 ) ) / ( 2 - 1 ) + ( 0 )";
-    //std::string myExpression = "( 2 / ( 1 + 1 ) - 2 / ( 1 + 1 ) ) /  2 + 1 ) + ( 0 )";
+    //std::string myExpression = "( 2 / ( 1 + 1 ) - 2 / ( 1 + 1 ) ) /  ( 2 + 1 ) + ( 0 )";
     //std::string myExpression = " 6 + 1 ) + 0.5";
     //std::string myExpression = "2 / ( 1 + 1 ) - 1";
     //std::string myExpression = "12 / 4 * + 3 - - - 6 * - - 3 / - - 2 + + - - + 45";
+    //std::string myExpression = "( 2 / 1 ) - ( 2 ) * ( 2 ) + ( 2 )";
     //Number a(7);
     //printer.print(a);
     //printer.print(Number(8));

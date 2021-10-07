@@ -160,23 +160,11 @@ Executor::Executor()
 {
 }
 
-void VisiterCalculator::visit(Number*)
-{
-}
-
-Answer VisiterCalculator::visit(UnarySubOperand* operand)
-{
-	Executor myExecutor;
-	auto tuple = myExecutor.calculate(localTokens, 0);
-	return std::make_tuple(operand->calculate(std::get<0>(tuple)), std::get<1>(tuple));
-}
-
 Answer ExecutorVersion2::calculate(ListTokens _tokens, int basePriority)
 {
 	ParserListToken new_parser(_tokens);
 	SmartCalcModule module = new_parser.getNearestModule(basePriority);
 	Answer myAnswer;
-	//если модуль сам может посчитать
 	if (!dynamic_cast<MonopletWithOutRecursion*>(module.get()))
 	{
 		if (!module->canCalculate())

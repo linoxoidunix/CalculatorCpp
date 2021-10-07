@@ -26,7 +26,8 @@ double Calculator::operator()(std::string myExpression)
             throw std::logic_error("Didn't calculate this: " + myPrinter.printToString(std::get<1>(outputTuple)));
         return outputValue;
     }
-    catch (const std::out_of_range& ex) {
+    catch (const std::out_of_range& ex) 
+    {
         std::cout << "An exception occurred: " << ex.what() << std::endl;
     }
     catch (const std::logic_error& ex) {
@@ -57,21 +58,21 @@ double CalculatorNew::operator()(std::string myExpression)
     ExecutorVersion2 executor;
     Printer myPrinter;
     double outputValue = -777;
-    try
-    {
-        auto outputTuple = executor.calculate(result);
-        outputValue = std::get<0>(outputTuple).getNumber();
-        if (!std::get<1>(outputTuple).empty())
-            throw std::logic_error("Didn't calculate this: " + myPrinter.printToString(std::get<1>(outputTuple)));
-        return outputValue;
-    }
-    catch (const std::out_of_range& ex) {
-        std::cout << "An exception occurred: " << ex.what() << std::endl;
-    }
-    catch (const std::logic_error& ex) {
-        std::cout << "An exception occurred: " << ex.what() << std::endl;
-    }
+    /*try
+    {*/
+    auto outputTuple = executor.calculate(result);
+    outputValue = std::get<0>(outputTuple).getNumber();
+    if (!std::get<1>(outputTuple).empty())
+        throw std::logic_error("Didn't calculate this: " + myPrinter.printToString(std::get<1>(outputTuple)));
     return outputValue;
+    //}
+    //catch (const std::out_of_range& ex) {
+    //    std::cout << "An exception occurred: " << ex.what() << std::endl;
+    //}
+    /*catch (const std::logic_error& ex) {
+        std::cout << "An exception occurred: " << ex.what() << std::endl;
+    }*/
+    //return outputValue;
 }
 
 std::list<std::string> CalculatorNew::split(std::string& s, std::string& delimiter)

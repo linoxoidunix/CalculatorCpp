@@ -6,40 +6,38 @@
 #include "Token.h"
 
 
-Answer Monoplet::calculate()
-{
-    return std::make_tuple(*(dynamic_cast<Number*>(myNumber.get())), myTokens);
-}
-
-bool Monoplet::canCalculate()
-{
-    return true;
-}
-
-ListTokens Monoplet::getRest()
-{
-    return ListTokens();
-}
-
-void Monoplet::setRest(ListTokens& list)
-{
-}
-
-void Monoplet::setNumber(SmartToken& Token)
-{
-    myNumber = Token;
-}
-
-void Monoplet::setNumber(SmartToken&& Token)
-{
-}
+//Answer Monoplet::calculate()
+//{
+//    return std::make_tuple(*(dynamic_cast<Number*>(myNumber.get())), myTokens);
+//}
+//
+//bool Monoplet::canCalculate()
+//{
+//    return true;
+//}
+//
+//ListTokens Monoplet::getRest()
+//{
+//    return ListTokens();
+//}
+//
+//void Monoplet::setRest(ListTokens& list)
+//{
+//}
+//
+//void Monoplet::setNumber(SmartToken& Token)
+//{
+//    myNumber = Token;
+//}
+//
+//void Monoplet::setNumber(SmartToken&& Token)
+//{
+//}
 
 Answer Duplet::calculate()
 {
-    ListTokens emptyListTokens;
-    Monoplet monoplet_left_number(emptyListTokens, number);
-    Answer leftPart = monoplet_left_number.calculate();
-    auto result = dynamic_cast<UnaryOperand*>(op.get())->calculate(std::get<0>(leftPart));
+    Number buffer = castNumber(number);
+    auto result = dynamic_cast<UnaryOperand*>(op.get())->calculate(buffer);
     return std::make_tuple(result, myTokens);
 }
 
@@ -70,31 +68,13 @@ void Duplet::setNumber(SmartToken&& token)
 
 Answer Triplet::calculate()
 {
-    if (!right_number)
-        right_number = expressionInTheBracket.front();
-    ListToken analyser(expressionInTheBracket);
-    ListTokens emptyListTokens;
-    Monoplet monoplet_left_number(emptyListTokens, left_number);
-    Answer leftPart = monoplet_left_number.calculate();
-    Monoplet monoplet_right_number(emptyListTokens, right_number);
-    Answer rightPart = monoplet_right_number.calculate();
-    //if(expressionInTheBracket.empty())
-    //    return std::make_tuple(dynamic_cast<BinaryOperand*>(op.get())->calculate(std::get<0>(leftPart), std::get<0>(rightPart)), ListTokens());
-    //else
-        return std::make_tuple(dynamic_cast<BinaryOperand*>(op.get())->calculate(std::get<0>(leftPart), std::get<0>(rightPart)), expressionInTheBracket);
+    Number bufferLeft = castNumber(left_number);
+    Number bufferRight = castNumber(right_number);
+    return std::make_tuple(dynamic_cast<BinaryOperand*>(op.get())->calculate(bufferLeft, bufferRight), expressionInTheBracket);
 }
 
 bool Triplet::canCalculate()
 {
-    //bool result = false;
-    //VisiterPriority checker_priority;
-    //ListToken list(expressionInTheBracket);
-    //if(list.getFirstOperand())
-    //    if (op->accept(&checker_priority) >= list.getFirstOperand()->accept(&checker_priority))
-    //    {
-    //        result = true;
-    //        return result;
-    //    }
     if (expressionInTheBracket.size() == 1)
     {
         right_number = expressionInTheBracket.front();
@@ -126,10 +106,7 @@ void Triplet::setNumber(SmartToken&& token)
 
 Answer MonopletWithOutRecursion::calculate()
 {
-    ListTokens emptyListTokens;
-    Monoplet monoplet_left_number(emptyListTokens, myNumber);
-    Number result = std::get<0>(monoplet_left_number.calculate());
-    return std::make_tuple(result, myTokens);
+    return std::make_tuple(*(dynamic_cast<Number*>(myNumber.get())), myTokens);
 }
 
 bool MonopletWithOutRecursion::canCalculate()
@@ -155,4 +132,37 @@ void MonopletWithOutRecursion::setNumber(SmartToken& Token)
 void MonopletWithOutRecursion::setNumber(SmartToken&& Token)
 {
     myNumber = Token;
+}
+
+bool ExpressionInTheBracket::canCalculate()
+{
+    return (number) ? true : false;
+
+}
+
+void ExpressionInTheBracket::setNumber(SmartToken& token)
+{
+    number = token;
+}
+
+void ExpressionInTheBracket::setNumber(SmartToken&& token)
+{
+    number = token;
+}
+
+ListTokens ExpressionInTheBracket::getRest()
+{
+    return tokensInTheBracket;
+}
+
+void ExpressionInTheBracket::setRest(ListTokens& list)
+{
+
+}
+
+Answer ExpressionInTheBracket::calculate()
+{
+    Number leftPart = castNumber(number);
+    Answer result = std::make_tuple(leftPart, tokensOutTheBracket);
+    return result;
 }
