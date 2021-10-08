@@ -60,9 +60,10 @@ SmartToken ListToken::getFirstOperand()
 	auto beginIterator = workList.begin();
 	while (beginIterator != workList.end())
 	{
-		if((beginIterator->get()->accept(&checker_is_operand) == TypeToken::TYPE_BINARY_OPERAND || beginIterator->get()->accept(&checker_is_operand) == TypeToken::TYPE_UNARY_OPERAND || 
-			beginIterator->get()->accept(&checker_is_operand) == TypeToken::TYPE_LEFT_BRACKET || beginIterator->get()->accept(&checker_is_operand) == TypeToken::TYPE_RIGHT_BRACKET))
-			break;
+		if (*beginIterator)
+			if((beginIterator->get()->accept(&checker_is_operand) == TypeToken::TYPE_BINARY_OPERAND || beginIterator->get()->accept(&checker_is_operand) == TypeToken::TYPE_UNARY_OPERAND || 
+				beginIterator->get()->accept(&checker_is_operand) == TypeToken::TYPE_LEFT_BRACKET || beginIterator->get()->accept(&checker_is_operand) == TypeToken::TYPE_RIGHT_BRACKET))
+				break;
 		beginIterator++;
 	}
 	if(beginIterator != workList.end())

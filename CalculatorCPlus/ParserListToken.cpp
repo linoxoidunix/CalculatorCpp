@@ -14,30 +14,35 @@ SmartCalcModule ParserListToken::getNearestModule(int base_priority)
 	TokenIsOperand checker_is_operand;
 	TokenIsOperandNew checker_type_token;
 	VisiterPriority checker_priority;
-	TypeToken type_firts_token = first_token->accept(&checker_type_token);
+	TypeToken type_firts_token = (first_token) ? first_token->accept(&checker_type_token) : TypeToken::TYPE_NO_TOKEN;
 	TypeToken type_second_token = (secon_token) ? secon_token->accept(&checker_type_token) : TypeToken::TYPE_NO_TOKEN;
 	bool there_are_third_tokens = analizer(except_first_and_second);
 	bool there_are_second_tokens = analizer(except_first);
 	SmartCalcModule resultingModule = std::make_shared<MonopletWithOutRecursion>(except_first, first_token);
-	if(type_firts_token == TypeToken::TYPE_NUMBER && type_second_token == TypeToken::TYPE_NO_TOKEN)
-		resultingModule = std::make_shared<MonopletWithOutRecursion>(except_first, first_token);
-	if (type_firts_token == TypeToken::TYPE_NUMBER && (type_second_token == TypeToken::TYPE_BINARY_OPERAND || type_second_token == TypeToken::TYPE_UNARY_OPERAND) && base_priority >= secon_token->accept(&checker_priority))
-		resultingModule = std::make_shared<MonopletWithOutRecursion>(except_first, first_token);
-	else
-		if (type_firts_token == TypeToken::TYPE_NUMBER && (type_second_token == TypeToken::TYPE_BINARY_OPERAND || type_second_token == TypeToken::TYPE_UNARY_OPERAND))
-			resultingModule = std::make_shared<Triplet>(secon_token, first_token, except_first_and_second);
+	if (type_firts_token == TypeToken::TYPE_NUMBER)
+	{
+		if (type_second_token == TypeToken::TYPE_NO_TOKEN)
+			resultingModule = std::make_shared<MonopletWithOutRecursion>(except_first, first_token);
+		if (type_second_token == TypeToken::TYPE_BINARY_OPERAND || type_second_token == TypeToken::TYPE_UNARY_OPERAND)
+			if (base_priority >= secon_token->accept(&checker_priority))
+				resultingModule = std::make_shared<MonopletWithOutRecursion>(except_first, first_token);
+			else
+				resultingModule = std::make_shared<Triplet>(secon_token, first_token, except_first_and_second);
+		if (type_second_token == TypeToken::TYPE_LEFT_BRACKET)
+			throw std::logic_error("No operator before left bracket");
+		if (type_second_token == TypeToken::TYPE_RIGHT_BRACKET)
+			throw std::logic_error("Number of left brackets not equal number of right brackets");
+	}
 	if (type_firts_token == TypeToken::TYPE_LEFT_BRACKET)
 	{
 		std::tuple<ListTokens, ListTokens> result = geTokensBeforeRightBracket(tokens);
 		resultingModule = std::make_shared<ExpressionInTheBracket>(std::get<0>(result), std::get<1>(result));
 	}
 	if (type_firts_token == TypeToken::TYPE_UNARY_OPERAND)
-		if(type_second_token == TypeToken::TYPE_BINARY_OPERAND)
+		if (type_second_token == TypeToken::TYPE_BINARY_OPERAND)
 			resultingModule = std::make_shared<MonopletWithOutRecursion>(except_first, first_token);
 		else
 			resultingModule = std::make_shared<Duplet>(first_token, except_first);
-	if (type_firts_token == TypeToken::TYPE_NUMBER && (type_second_token == TypeToken::TYPE_LEFT_BRACKET || type_second_token == TypeToken::TYPE_RIGHT_BRACKET))
-		throw std::logic_error("Number of left brackets not equal number of right brackets");
 	SmartToken first_operand = analizer.getFirstOperand();
 	resultingModule->basePriority = (first_operand) ? first_operand->accept(&checker_priority) : 0;
 	return resultingModule;
@@ -74,7 +79,7 @@ std::tuple<ListTokens, ListTokens> ParserListToken::geTokensBeforeRightBracket(c
 	}
 	catch (std::out_of_range& ex)
 	{
-		std::cout << "Exceptions occured: " << ex.what() << std::endl;
+		std::cout << "Exception occured: " << ex.what() << std::endl;
 	}
 	return std::make_tuple(beforeRightBracket, afterRightBracket);
 }

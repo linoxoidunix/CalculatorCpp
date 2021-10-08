@@ -1,4 +1,5 @@
 #include "CalculatedModule.h"
+#include "ParserListToken.h"
 #include "Executor.h"
 #include "ListToken.h"
 #include <memory>
@@ -75,11 +76,16 @@ Answer Triplet::calculate()
 
 bool Triplet::canCalculate()
 {
+    //шанс что число
     if (expressionInTheBracket.size() == 1)
     {
-        right_number = expressionInTheBracket.front();
-        expressionInTheBracket.clear();
-        return true;
+        TokenIsOperand checker_is_operand;
+        if (expressionInTheBracket.front()->accept(&checker_is_operand) == TypeToken::TYPE_NUMBER)
+        {
+            right_number = expressionInTheBracket.front();
+            expressionInTheBracket.clear();
+            return true;
+        }
     }
     return (right_number) ? true : false;
 }
@@ -106,7 +112,24 @@ void Triplet::setNumber(SmartToken&& token)
 
 Answer MonopletWithOutRecursion::calculate()
 {
-    return std::make_tuple(*(dynamic_cast<Number*>(myNumber.get())), myTokens);
+    Answer answer;
+    try
+    {
+        TokenIsOperand checker_token;
+        if (myNumber)
+        {
+            if (myNumber->accept(&checker_token) != TypeToken::TYPE_NUMBER)
+                throw std::runtime_error("Expect a number. But " + myNumber->print() + " isn't number");
+        }
+        else
+            throw std::runtime_error("Expect a number");
+        answer = std::make_tuple(*(dynamic_cast<Number*>(myNumber.get())), myTokens);
+    }
+    catch (std::runtime_error& ex)
+    {
+        std::cout << "Exception occured: " << ex.what() << std::endl;
+    }
+    return answer;
 }
 
 bool MonopletWithOutRecursion::canCalculate()

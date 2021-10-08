@@ -58,6 +58,11 @@ SCENARIO("vectors can be sized and resized", "[vector]")
 		REQUIRE(myCalculator("( 2 / ( 1 + 1 ) - 2 / ( 1 + 1 ) ) / ( 2 - 1 ) + ( 0 )") == 0);
 	}
 
+	WHEN("Testing no operand before left bracket")
+	{
+		REQUIRE_THROWS_AS(myCalculator("( 2 / ( 1 + 1 ) - 2 / ( 1 + 1 ) ) ( 2 - 1 ) + ( 0 )"), std::logic_error);
+	}
+
 
 };
 }

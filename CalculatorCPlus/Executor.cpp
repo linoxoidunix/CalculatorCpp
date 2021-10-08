@@ -101,7 +101,7 @@ std::tuple<ListTokens, ListTokens> Executor::getokensBeforeRightBracket(ListToke
 	}
 	catch (std::out_of_range& ex)
 	{
-		std::cout << "Exceptions occured: " << ex.what() << std::endl;
+		std::cout << "Exception occured: " << ex.what() << std::endl;
 	}
 	return std::make_tuple(beforeRightBracket, afterRightBracket);
 }
@@ -165,29 +165,32 @@ Answer ExecutorVersion2::calculate(ListTokens _tokens, int basePriority)
 	ParserListToken new_parser(_tokens);
 	SmartCalcModule module = new_parser.getNearestModule(basePriority);
 	Answer myAnswer;
-	if (!dynamic_cast<MonopletWithOutRecursion*>(module.get()))
+	if (module)
 	{
-		if (!module->canCalculate())
+		if (!dynamic_cast<MonopletWithOutRecursion*>(module.get()))
 		{
-			//войти в рекурсию
-			Answer subExpression = calculate(module->getRest(), module->basePriority);
-			module->setRest(std::get<1>(subExpression));
-			SmartToken ptr = std::make_shared<Number>(std::get<0>(subExpression).getNumber());
-			module->setNumber(ptr);
+			if (!module->canCalculate())
+			{
+				//войти в рекурсию
+				Answer subExpression = calculate(module->getRest(), module->basePriority);
+				module->setRest(std::get<1>(subExpression));
+				SmartToken ptr = std::make_shared<Number>(std::get<0>(subExpression).getNumber());
+				module->setNumber(ptr);
+			}
+			myAnswer = module->calculate();
+			if (std::get<1>(myAnswer).size() != 0)
+			{
+				auto list = std::get<1>(myAnswer);
+				SmartToken token = std::make_shared<Number>(std::get<0>(myAnswer).getNumber());
+				list.insert(list.begin(), token);
+				myAnswer = calculate(list, basePriority);
+			}
 		}
-		myAnswer = module->calculate();
-		if (std::get<1>(myAnswer).size() != 0)
+		else
 		{
-			auto list = std::get<1>(myAnswer);
-			SmartToken token = std::make_shared<Number>(std::get<0>(myAnswer).getNumber());
-			list.insert(list.begin(), token);
-			myAnswer = calculate(list, basePriority);
+			myAnswer = module->calculate();
+			return myAnswer;
 		}
-	}
-	else
-	{
-		myAnswer = module->calculate();
-		return myAnswer;
 	}
 	return myAnswer;
 }
