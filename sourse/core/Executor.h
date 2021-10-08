@@ -51,8 +51,8 @@ public:
 	virtual Answer calculate(ListTokens _tokens, int basePriority = 0) override;
 	~Executor() = default;
 private:
-	// output.first - выражение до правой скобки
-	// output.second - выражение после правой скобки
+	// output.first - РІС‹СЂР°Р¶РµРЅРёРµ РґРѕ РїСЂР°РІРѕР№ СЃРєРѕР±РєРё
+	// output.second - РІС‹СЂР°Р¶РµРЅРёРµ РїРѕСЃР»Рµ РїСЂР°РІРѕР№ СЃРєРѕР±РєРё
 	std::tuple<ListTokens, ListTokens> getokensBeforeRightBracket(ListTokens _tokens);
 };
 

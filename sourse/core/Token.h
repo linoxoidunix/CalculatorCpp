@@ -250,7 +250,7 @@ public:
 	inline virtual TypeToken visit(UnarySubOperand*) override { return TypeToken::TYPE_UNARY_OPERAND; };
 	inline virtual TypeToken visit(UnarySumOperand*) override { return TypeToken::TYPE_UNARY_OPERAND; };
 	inline virtual TypeToken visit(LeftBracketOperand*) override { return TypeToken::TYPE_LEFT_BRACKET; };
-	inline virtual TypeToken visit(RightBracketOperand*) override { return TypeToken::TYPE_NUMBER; }; // TO DO! пока костыль
+	inline virtual TypeToken visit(RightBracketOperand*) override { return TypeToken::TYPE_NUMBER; }; // TO DO! РїРѕРєР° РєРѕСЃС‚С‹Р»СЊ
 private:
 	Token* myToken;
 };

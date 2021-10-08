@@ -47,12 +47,12 @@ Answer Executor::calculate(ListTokens _tokens, int basePriority)
 	else
 	{
 		UnaryOperand* operand = dynamic_cast<UnaryOperand*>(operandToken.get());
-		//если найдена правая скобка, такого быть не может из-за getokensBeforeRightBracket(allButFirst);
+		//РµСЃР»Рё РЅР°Р№РґРµРЅР° РїСЂР°РІР°СЏ СЃРєРѕР±РєР°, С‚Р°РєРѕРіРѕ Р±С‹С‚СЊ РЅРµ РјРѕР¶РµС‚ РёР·-Р·Р° getokensBeforeRightBracket(allButFirst);
 		if (dynamic_cast<RightBracketOperand*>(operandToken.get()))
 		{
 			throw std::logic_error("founded right bracket without left bracket");
 		}
-		//если не левая скобка
+		//РµСЃР»Рё РЅРµ Р»РµРІР°СЏ СЃРєРѕР±РєР°
 		if (!dynamic_cast<LeftBracketOperand*>(operandToken.get()))
 		{
 			auto tuple = calculate(allButFirst, basePriority);
@@ -171,7 +171,7 @@ Answer ExecutorVersion2::calculate(ListTokens _tokens, int basePriority)
 		{
 			if (!module->canCalculate())
 			{
-				//войти в рекурсию
+				//РІРѕР№С‚Рё РІ СЂРµРєСѓСЂСЃРёСЋ
 				Answer subExpression = calculate(module->getRest(), module->basePriority);
 				module->setRest(std::get<1>(subExpression));
 				SmartToken ptr = std::make_shared<Number>(std::get<0>(subExpression).getNumber());

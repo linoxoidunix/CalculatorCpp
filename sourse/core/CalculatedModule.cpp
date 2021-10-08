@@ -76,7 +76,7 @@ Answer Triplet::calculate()
 
 bool Triplet::canCalculate()
 {
-    //шанс что число
+    //С€Р°РЅСЃ С‡С‚Рѕ С‡РёСЃР»Рѕ
     if (expressionInTheBracket.size() == 1)
     {
         TokenIsOperand checker_is_operand;
