@@ -4,15 +4,6 @@
 #include "string"
 #include <list>
 
-class Calculator
-{
-public:
-	Calculator() = default;
-	double operator()(std::string s);
-private:
-	std::list<std::string> split(std::string& s, std::string& delimiter);
-};
-
 class CalculatorNew
 {
 public:

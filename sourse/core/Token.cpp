@@ -11,12 +11,7 @@ TypeToken Number::accept(IVisiterIsOperand* visiter)
 {
 	return visiter->visit(this);
 }
-//std::tuple<Number, std::list<std::shared_ptr<Token>>> Number::accept(IvisiterCalculator* vi)
-//{
-//	vi->
-//	return std::tuple<Number, std::list<std::shared_ptr<Token>>>();;
-//}
-//
+
 int NoOperand::accept(IVisiterPriority* visiter)
 {
 	return visiter->visit(this);
@@ -25,11 +20,7 @@ TypeToken NoOperand::accept(IVisiterIsOperand* visiter)
 {
 	return visiter->visit(this);
 }
-//std::tuple<Number, std::list<std::shared_ptr<Token>>> NoOperand::accept(IvisiterCalculator* visiter)
-//{
-//	return std::tuple<Number, std::list<std::shared_ptr<Token>>>();
-//}
-//
+
 int MulOperand::accept(IVisiterPriority* visiter)
 {
 	return visiter->visit(this);
@@ -39,11 +30,6 @@ TypeToken MulOperand::accept(IVisiterIsOperand* visiter)
 {
 	return visiter->visit(this);
 }
-
-//std::tuple<Number, std::list<std::shared_ptr<Token>>> MulOperand::accept(IvisiterCalculator* visiter)
-//{
-//	return std::tuple<Number, std::list<std::shared_ptr<Token>>>();
-//}
 
 Number& MulOperand::calculate(Number& left, Number& right)
 {
@@ -60,13 +46,6 @@ TypeToken SubOperand::accept(IVisiterIsOperand* visiter)
 	return visiter->visit(this);
 }
 
-//std::tuple<Number, std::list<std::shared_ptr<Token>>> SubOperand::accept(IvisiterCalculator* visiter)
-//{
-//	//visiter->visit(this);
-//	//return visiter->;
-//	visiter->
-//}
-
 Number& SubOperand::calculate(Number& left, Number& right)
 {
 	return left - right;
@@ -82,11 +61,6 @@ TypeToken SumOperand::accept(IVisiterIsOperand* visiter)
 	return visiter->visit(this);
 }
 
-//std::tuple<Number, std::list<std::shared_ptr<Token>>> SumOperand::accept(IvisiterCalculator* visiter)
-//{
-//	return std::tuple<Number, std::list<std::shared_ptr<Token>>>();
-//}
-
 Number& SumOperand::calculate(Number& left, Number& right)
 {
 	return left + right;
@@ -101,11 +75,6 @@ TypeToken DivOperand::accept(IVisiterIsOperand* visiter)
 {
 	return visiter->visit(this);
 }
-
-//std::tuple<Number, std::list<std::shared_ptr<Token>>> DivOperand::accept(IvisiterCalculator* visiter)
-//{
-//	return std::tuple<Number, std::list<std::shared_ptr<Token>>>();
-//}
 
 Number& DivOperand::calculate(Number& left, Number& right)
 {
@@ -123,11 +92,6 @@ TypeToken UnarySubOperand::accept(IVisiterIsOperand* visiter)
 {
 	return visiter->visit(this);
 }
-
-//std::tuple<Number, std::list<std::shared_ptr<Token>>> UnarySubOperand::accept(IvisiterCalculator* visiter)
-//{
-//	return std::tuple<Number, std::list<std::shared_ptr<Token>>>();
-//}
 
 Number& UnarySubOperand::calculate(Number& number)
 {
@@ -175,11 +139,6 @@ TypeToken UnarySumOperand::accept(IVisiterIsOperand* visiter)
 {
 	return visiter->visit(this);
 }
-
-//std::tuple<Number, std::list<std::shared_ptr<Token>>> UnarySumOperand::accept(IvisiterCalculator* visiter)
-//{
-//	return std::tuple<Number, std::list<std::shared_ptr<Token>>>();
-//}
 
 Number& UnarySumOperand::calculate(Number& number)
 {

@@ -33,7 +33,6 @@ public:
 	{
 		if (workList.size() < 2)
 			return std::shared_ptr<Token>();
-			//return std::make_shared<NoOperand>();
 		auto iteratorBegin = workList.begin();
 		if (dynamic_cast<Operand*>(iteratorBegin->get()))
 			return *iteratorBegin;
@@ -57,7 +56,6 @@ public:
 	ListTokens getNoFirtsElement()
 	{
 		if (workList.size() < 2)
-			//return { std::make_shared<Number>() };
 			return ListTokens();
 		auto iteratorBegin = workList.begin();
 		iteratorBegin++;

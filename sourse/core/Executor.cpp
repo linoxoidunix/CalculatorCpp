@@ -4,108 +4,6 @@
 #include "CalculatedModule.h"
 #include "ParserListToken.h"
 
-Answer Executor::calculate(ListTokens _tokens, int basePriority)
-{
-	ListToken myListToken(_tokens);
-	auto leftToken = myListToken.getLeftToken();
-	auto operandToken = myListToken.getOperandToken();
-	auto rightTokens = myListToken.getRighToken();
-	auto allButFirst = myListToken.getNoFirtsElement();
-	Number* leftNumber = dynamic_cast<Number*>(leftToken.get());
-	Answer result;
-	if ((leftNumber != nullptr))
-	{
-		result = std::make_tuple(*leftNumber, myListToken.getNoFirtsElement());
-		auto operand = dynamic_cast<BinaryOperand*>(operandToken.get());
-		if (operand != nullptr)
-		{
-			VisiterPriority visiterPriority;
-			if (basePriority < operandToken->accept(&visiterPriority))
-			{
-				auto tuple = calculate(rightTokens, operandToken->accept(&visiterPriority));
-				result = std::make_tuple(operand->calculate(*leftNumber, std::get<0>(tuple)), std::get<1>(tuple));
-				ListToken nextToken(std::get<1>(result));
-				auto childList = std::get<1>(result);
-				if (!std::get<1>(result).empty() && nextToken.getLeftToken()->accept(&visiterPriority) != INT_MAX)
-				{
-					//basePriority = 0;
-					if (nextToken.getLeftToken()->accept(&visiterPriority) > basePriority)
-					{
-						auto ptr = std::make_shared<Number>(std::get<0>(result));
-						childList.insert(childList.begin(), ptr);
-						result = calculate(childList);
-					}
-				}
-			}
-		}
-		else
-		if(operandToken)
-			return std::make_tuple(*leftNumber, allButFirst);
-		else
-			return std::make_tuple(*leftNumber, rightTokens);
-	}
-	else
-	{
-		UnaryOperand* operand = dynamic_cast<UnaryOperand*>(operandToken.get());
-		//если найдена правая скобка, такого быть не может из-за getokensBeforeRightBracket(allButFirst);
-		if (dynamic_cast<RightBracketOperand*>(operandToken.get()))
-		{
-			throw std::logic_error("founded right bracket without left bracket");
-		}
-		//если не левая скобка
-		if (!dynamic_cast<LeftBracketOperand*>(operandToken.get()))
-		{
-			auto tuple = calculate(allButFirst, basePriority);
-			result = std::make_tuple(operand->calculate(std::get<0>(tuple)), std::get<1>(tuple));
-		}
-		else
-		{
-			auto dividedTuple = getokensBeforeRightBracket(allButFirst);
-			auto tuple = calculate(std::get<0>(dividedTuple));
-			result = std::make_tuple(std::get<0>(tuple), std::get<1>(dividedTuple));
-		}
-		
-	}
-	return result;
-}
-
-std::tuple<ListTokens, ListTokens> Executor::getokensBeforeRightBracket(ListTokens _tokens)
-{
-	ListTokens beforeRightBracket;
-	ListTokens afterRightBracket;
-	bool start_initialise_after_right_bracket = false;
-	try
-	{
-		int counterLeftBracket = 1;
-		for (auto elem = _tokens.begin(); elem != _tokens.end(); elem++)
-		{
-			if (dynamic_cast<LeftBracketOperand*>(elem->get()))
-			{
-				counterLeftBracket++;
-			}
-			if (dynamic_cast<RightBracketOperand*>(elem->get()))
-			{
-				counterLeftBracket--;
-			}
-			if (dynamic_cast<RightBracketOperand*>(elem->get()) && counterLeftBracket == 0)
-			{
-				start_initialise_after_right_bracket = true;
-				elem++;
-				afterRightBracket.assign(elem, _tokens.end());
-				break;
-			}
-			beforeRightBracket.push_back(*elem);
-		}
-		if(!start_initialise_after_right_bracket)
-			throw std::out_of_range("Didn't find corresponsable right bracket");
-	}
-	catch (std::out_of_range& ex)
-	{
-		std::cout << "Exception occured: " << ex.what() << std::endl;
-	}
-	return std::make_tuple(beforeRightBracket, afterRightBracket);
-}
-
 int VisiterPriority::visit(MulOperand* op)
 {
 	return op->getPriority();
@@ -154,10 +52,6 @@ int VisiterPriority::visit(LeftBracketOperand* op)
 int VisiterPriority::visit(RightBracketOperand* op)
 {
 	return op->getPriority();
-}
-
-Executor::Executor()
-{
 }
 
 Answer ExecutorVersion2::calculate(ListTokens _tokens, int basePriority)

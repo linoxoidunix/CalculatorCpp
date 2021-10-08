@@ -44,18 +44,6 @@ public:
 };
 
 
-class Executor : public IExecutor
-{
-public:
-	Executor();
-	virtual Answer calculate(ListTokens _tokens, int basePriority = 0) override;
-	~Executor() = default;
-private:
-	// output.first - выражение до правой скобки
-	// output.second - выражение после правой скобки
-	std::tuple<ListTokens, ListTokens> getokensBeforeRightBracket(ListTokens _tokens);
-};
-
 class ExecutorVersion2 : public IExecutor
 {
 public:

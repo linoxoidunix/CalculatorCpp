@@ -6,35 +6,6 @@
 #include <exception>
 #include "Token.h"
 
-
-//Answer Monoplet::calculate()
-//{
-//    return std::make_tuple(*(dynamic_cast<Number*>(myNumber.get())), myTokens);
-//}
-//
-//bool Monoplet::canCalculate()
-//{
-//    return true;
-//}
-//
-//ListTokens Monoplet::getRest()
-//{
-//    return ListTokens();
-//}
-//
-//void Monoplet::setRest(ListTokens& list)
-//{
-//}
-//
-//void Monoplet::setNumber(SmartToken& Token)
-//{
-//    myNumber = Token;
-//}
-//
-//void Monoplet::setNumber(SmartToken&& Token)
-//{
-//}
-
 Answer Duplet::calculate()
 {
     Number buffer = castNumber(number);

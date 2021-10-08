@@ -25,24 +25,6 @@ protected:
 
 };
 
-//class Monoplet : public ICalculatedModule
-//{
-//public:
-//	template<typename T>
-//	Monoplet(T&& rest_tokens, SmartToken& number) : myNumber(number), myTokens(rest_tokens) {};
-//	Monoplet(SmartToken& number) : Monoplet(ListTokens(), number) {};
-//	virtual Answer calculate() override;
-//	virtual bool canCalculate() override;
-//	virtual ListTokens getRest() override;
-//	virtual void setRest(ListTokens& list) override;
-//	virtual void setNumber(SmartToken& Token) override;
-//	virtual void setNumber(SmartToken&& Token) override;
-//	~Monoplet() = default;
-//private:
-//	SmartToken myNumber;
-//	ListTokens myTokens;
-//};
-
 class MonopletWithOutRecursion : public ICalculatedModule
 {
 public:
