@@ -17,7 +17,11 @@ class CalculatorNew
 {
 public:
 	CalculatorNew();
+	//safety calculation with handling error
 	double operator()(std::string s);
+	//not safety/ without handling error
+	double calculateDangerous(std::string s);
+
 private:
 	std::list<std::string> split(std::string& s, std::string& delimiter);
 };

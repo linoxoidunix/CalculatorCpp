@@ -131,7 +131,7 @@ TypeToken UnarySubOperand::accept(IVisiterIsOperand* visiter)
 
 Number& UnarySubOperand::calculate(Number& number)
 {
-	return Number(0) - number;
+	return number * Number(-1);
 }
 
 ListTokens TokensFactory::produce(std::list<std::string> fullExpression) const

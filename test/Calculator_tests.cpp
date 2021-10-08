@@ -1,8 +1,8 @@
 
 #define CATCH_CONFIG_MAIN
 
-#include <catch.hpp>
-#include "../CalculatorCPlus/Calculator.h"
+#include "include\catch.hpp"
+#include "..\sourse\core\Calculator.h"
 
 SCENARIO("vectors can be sized and resized", "[vector]") 
 {
@@ -50,7 +50,7 @@ SCENARIO("vectors can be sized and resized", "[vector]")
 
 	WHEN("Testing divided by 0")
 	{
-		REQUIRE_THROWS_AS(myCalculator("-3 / 0"), std::out_of_range);
+		REQUIRE_THROWS_AS(myCalculator.calculateDangerous("-3 / 0"), std::out_of_range);
 	}
 
 	WHEN("Testing bracket")
@@ -60,7 +60,7 @@ SCENARIO("vectors can be sized and resized", "[vector]")
 
 	WHEN("Testing no operand before left bracket")
 	{
-		REQUIRE_THROWS_AS(myCalculator("( 2 / ( 1 + 1 ) - 2 / ( 1 + 1 ) ) ( 2 - 1 ) + ( 0 )"), std::logic_error);
+		REQUIRE_THROWS_AS(myCalculator.calculateDangerous("( 2 / ( 1 + 1 ) - 2 / ( 1 + 1 ) ) ( 2 - 1 ) + ( 0 )"), std::logic_error);
 	}
 
 
