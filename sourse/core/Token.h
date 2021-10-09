@@ -127,7 +127,6 @@ public:
 	virtual Number& calculate(Number& number) override;
 };
 
-//
 class NoOperand : public Operand
 {
 public:
@@ -135,9 +134,8 @@ public:
 	virtual ~NoOperand() = default;
 	virtual int accept(IVisiterPriority* visiter) override;
 	virtual TypeToken accept(IVisiterIsOperand* visiter) override;
-	//virtual std::tuple<Number, std::list<std::shared_ptr<Token>>> accept(IvisiterCalculator* visiter) override;
 };
-//
+
 class BinaryOperand : public Operand
 {
 public:
@@ -150,7 +148,7 @@ protected:
 	Number right;
 
 };
-//
+
 class MulOperand : public BinaryOperand
 {
 public:
@@ -161,6 +159,16 @@ public:
 	virtual TypeToken accept(IVisiterIsOperand* visiter) override;
 	virtual std::string print() override { return "*"; };
 	virtual Number& calculate(Number& left, Number& right) override;
+};
+
+//for calculating 6 (7) == 6 FakeMulOperand (7)
+class FakeMulOperand : public MulOperand
+{
+public:
+	FakeMulOperand(Number _left = 0, Number _right = 0) :MulOperand(_left, _right) { priority = 3; };
+	Number operator() (Number left, Number right) { return left * right; };
+	virtual ~FakeMulOperand() = default;
+	virtual std::string print() override { return ""; };
 };
 
 class DivOperand : public BinaryOperand
@@ -295,10 +303,6 @@ public:
 			return std::make_shared<SumOperand>();
 		if (expression == "-")
 			return std::make_shared<SubOperand>();
-		//if (expression == "(")
-		//	return std::make_shared<LeftBracketOperand>();
-		//if (expression == ")")
-		//	return std::make_shared<RightBracketOperand>();
 		try
 		{
 			double value = std::stod(expression);

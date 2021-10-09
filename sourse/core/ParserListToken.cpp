@@ -29,7 +29,9 @@ SmartCalcModule ParserListToken::getNearestModule(int base_priority)
 			else
 				resultingModule = std::make_shared<Triplet>(secon_token, first_token, except_first_and_second);
 		if (type_second_token == TypeToken::TYPE_LEFT_BRACKET)
-			throw std::logic_error("No operator before left bracket");
+		{
+			resultingModule = std::make_shared<Triplet>(std::make_shared<FakeMulOperand>(), first_token, except_first);
+		}
 		if (type_second_token == TypeToken::TYPE_RIGHT_BRACKET)
 			throw std::logic_error("Number of left brackets not equal number of right brackets");
 	}

@@ -164,9 +164,3 @@ TypeToken RightBracketOperand::accept(IVisiterIsOperand* visiter)
 {
 	return visiter->visit(this);
 }
-
-//void Printer::print(Number& number)
-//{
-//}
-
-

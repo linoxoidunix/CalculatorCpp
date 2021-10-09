@@ -28,7 +28,8 @@ int main()
     //std::string myExpression = "12 / 4 * 3 - 6 * 3 / 2 - 45 * 1 - 1 + 1";
     //std::string myExpression = "1 + 2 (";
     //std::string myExpression =  "& + 1";
-    std::string myExpression = "( 2 / ( 1 + 1 ) - 2 / ( 1 + 1 ) ) ( 2 - 1 ) + ( 0 )";
+    //std::string myExpression = "( 2 / ( 1 + 1 ) - 2 / ( 1 + 1 ) ) ( 2 - 1 ) + ( 0 )";
+    std::string myExpression = "( 2 )  ( 3 + 3 )";
     //std::string myExpression = "- 1";
     //std::string myExpression = "- 2 * - - 1 + 1";
     //std::string myExpression = "12 * 4 / 3";
