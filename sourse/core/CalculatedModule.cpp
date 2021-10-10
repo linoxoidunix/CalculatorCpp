@@ -160,3 +160,15 @@ Answer ExpressionInTheBracket::calculate()
     Answer result = std::make_tuple(leftPart, tokensOutTheBracket);
     return result;
 }
+
+Number ICalculatedModule::castNumber(SmartToken& token)
+{
+    MonopletWithOutRecursion plet(token);
+    return std::get<0>(plet.calculate());
+}
+
+Number ICalculatedModule::castNumber(SmartToken&& token)
+{
+    MonopletWithOutRecursion plet(token);
+    return std::get<0>(plet.calculate());
+}

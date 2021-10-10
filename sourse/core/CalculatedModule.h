@@ -20,8 +20,8 @@ public:
 
 	int basePriority = 0;
 protected:
-	template<typename T>
-	Number castNumber(T&& token) { MonopletWithOutRecursion plet(token); return std::get<0>(plet.calculate()); }
+	Number castNumber(SmartToken& token);
+	Number castNumber(SmartToken&& token);
 
 };
 
