@@ -131,7 +131,6 @@ void MonopletWithOutRecursion::setNumber(SmartToken&& Token)
 bool ExpressionInTheBracket::canCalculate()
 {
     return (number) ? true : false;
-
 }
 
 void ExpressionInTheBracket::setNumber(SmartToken& token)

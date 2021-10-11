@@ -9,7 +9,7 @@ CalculatorNew::CalculatorNew()
 {
 }
 
-double CalculatorNew::operator()(std::string myExpression)
+ResultatCalculation CalculatorNew::operator()(std::string myExpression)
 {
     std::string delimiter = " ";
     std::list<std::string> v = split(myExpression, delimiter);
@@ -17,14 +17,14 @@ double CalculatorNew::operator()(std::string myExpression)
     auto result = newTokensFactory.produce(v);
     ExecutorVersion2 executor;
     Printer myPrinter;
-    double outputValue = -777;
+    ResultatCalculation resultat;
     try
     {
     auto outputTuple = executor.calculate(result);
-    outputValue = std::get<0>(outputTuple).getNumber();
+    resultat = ResultatCalculation(std::get<0>(outputTuple).getNumber());
     if (!std::get<1>(outputTuple).empty())
         throw std::logic_error("Didn't calculate this: " + myPrinter.printToString(std::get<1>(outputTuple)));
-    return outputValue;
+    return resultat;
     }
     catch (const std::out_of_range& ex) {
         std::cout << "An exception occurred: " << ex.what() << std::endl;
@@ -35,10 +35,10 @@ double CalculatorNew::operator()(std::string myExpression)
     catch (const std::runtime_error& ex) {
         std::cout << "An exception occurred: " << ex.what() << std::endl;
     }
-    return outputValue;
+    return resultat;
 }
 
-double CalculatorNew::calculateDangerous(std::string myExpression)
+ResultatCalculation CalculatorNew::calculateDangerous(std::string myExpression)
 {
     std::string delimiter = " ";
     std::list<std::string> v = split(myExpression, delimiter);
@@ -46,12 +46,12 @@ double CalculatorNew::calculateDangerous(std::string myExpression)
     auto result = newTokensFactory.produce(v);
     ExecutorVersion2 executor;
     Printer myPrinter;
-    double outputValue = -777;
+    ResultatCalculation resultat;
     auto outputTuple = executor.calculate(result);
-    outputValue = std::get<0>(outputTuple).getNumber();
+    resultat = ResultatCalculation(std::get<0>(outputTuple).getNumber());
     if (!std::get<1>(outputTuple).empty())
         throw std::logic_error("Didn't calculate this: " + myPrinter.printToString(std::get<1>(outputTuple)));
-    return outputValue;
+    return resultat;
 }
 
 
