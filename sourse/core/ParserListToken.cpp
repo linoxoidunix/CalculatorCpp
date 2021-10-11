@@ -11,7 +11,7 @@ SmartCalcModule ParserListToken::getNearestModule(int base_priority)
 	SmartToken secon_token = analizer.getSecondToken();
 	ListTokens except_first_and_second = analizer.getAllExceptFirstAndSecond();
 	ListTokens except_first = analizer.getAllExceptFirst();
-	TokenIsOperand checker_is_operand;
+	TokenIsOperandNew checker_is_operand;
 	TokenIsOperandNew checker_type_token;
 	VisiterPriority checker_priority;
 	TypeToken type_firts_token = (first_token) ? first_token->accept(&checker_type_token) : TypeToken::TYPE_NO_TOKEN;

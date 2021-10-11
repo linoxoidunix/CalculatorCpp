@@ -50,7 +50,7 @@ bool Triplet::canCalculate()
     //шанс что число
     if (expressionInTheBracket.size() == 1)
     {
-        TokenIsOperand checker_is_operand;
+        TokenIsOperandNew checker_is_operand;
         if (expressionInTheBracket.front()->accept(&checker_is_operand) == TypeToken::TYPE_NUMBER)
         {
             right_number = expressionInTheBracket.front();
@@ -84,22 +84,15 @@ void Triplet::setNumber(SmartToken&& token)
 Answer MonopletWithOutRecursion::calculate()
 {
     Answer answer;
-    try
+    TokenIsOperandNew checker_token;
+    if (myNumber)
     {
-        TokenIsOperand checker_token;
-        if (myNumber)
-        {
-            if (myNumber->accept(&checker_token) != TypeToken::TYPE_NUMBER)
-                throw std::runtime_error("Expect a number. But " + myNumber->print() + " isn't number");
-        }
-        else
-            throw std::runtime_error("Expect a number");
-        answer = std::make_tuple(*(dynamic_cast<Number*>(myNumber.get())), myTokens);
+        if (myNumber->accept(&checker_token) != TypeToken::TYPE_NUMBER)
+            throw std::runtime_error("Expect a number. But " + myNumber->print() + " isn't number");
     }
-    catch (std::runtime_error& ex)
-    {
-        std::cout << "Exception occured: " << ex.what() << std::endl;
-    }
+    else
+        throw std::runtime_error("Expect a number");
+    answer = std::make_tuple(*(dynamic_cast<Number*>(myNumber.get())), myTokens);
     return answer;
 }
 

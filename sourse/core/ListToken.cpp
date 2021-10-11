@@ -56,7 +56,7 @@ SmartToken ListToken::getFirstOperand()
 {
 	if (workList.empty())
 		return SmartToken();
-	TokenIsOperand checker_is_operand;
+	TokenIsOperandNew checker_is_operand;
 	auto beginIterator = workList.begin();
 	while (beginIterator != workList.end())
 	{
