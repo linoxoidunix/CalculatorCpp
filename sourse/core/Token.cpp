@@ -107,7 +107,7 @@ ListTokens TokensFactory::produce(std::list<std::string> fullExpression) const
 		BinaryTokenFactory binaryFactory;
 		UnaryTokenFactory  unaryFactory;
 		TokenIsOperandNew tokenIsOperand;
-		bool _prevTokenIsOperand = (prev_ptr) ? (prev_ptr->accept(&tokenIsOperand) != TypeToken::TYPE_NUMBER) : false;
+		bool _prevTokenIsOperand = (prev_ptr) ? (prev_ptr->accept(&tokenIsOperand) != TypeToken::TYPE_NUMBER && prev_ptr->accept(&tokenIsOperand) != TypeToken::TYPE_RIGHT_BRACKET) : false;
 		bool _prevTokenExist = (prev_ptr) ? true : false;
 		auto binaryPtr = binaryFactory.produce(currentToken);
 		auto unaryPtr = unaryFactory.produce(currentToken);

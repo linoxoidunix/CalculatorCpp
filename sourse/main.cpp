@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     CalculatorNew myCalculator;
     if (all_args.empty())
     {
-        std::string myExpression = ")";
+        std::string myExpression = "( 2 / ( 1 + 1 ) - 2 / ( 1 + 1 ) ) / ( 2 - 1 ) + ( 0 )";
         printer.print(myCalculator(myExpression));
     }
     else
